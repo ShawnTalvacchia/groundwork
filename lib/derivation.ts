@@ -1,0 +1,238 @@
+import {
+  getAllDocs,
+  getArchivedPhases,
+  getDecisions,
+  getFutureItems,
+  getGlossary,
+  getOpenQuestions,
+  getPunchItems,
+  getQueuedSeeds,
+  getRoadmap,
+  getTierPhysics,
+  getTiers,
+  getTrackerModel,
+  getWorkModel,
+  TIER_ORDER,
+} from "@/lib/system";
+import { getComponentInventory, getStyleguide } from "@/lib/styleguide";
+
+// Drift alarms for the /system surface (knowledge-system Workstream M).
+//
+// The doc formats are parser API, and format drift fails SILENTLY — a parser
+// handed an unexpected shape returns empty or partial, and the page renders
+// hollow with no signal. These are invariant checks, not just zero-checks:
+// the worst real parser bugs were non-zero-but-wrong (an overcount, a bold
+// field swallowing its neighbour), so each parser asserts the shape it
+// promises — expected counts, required fields, frontmatter coverage.
+//
+// WARN, never fail: a drifted doc format must not block a product deploy.
+// Alarms render as a band on every /system page (layout.tsx) and console.warn
+// at build time. A firing alarm means the DOC drifted from spec — fix the doc
+// (formats never bend to the parsers), or update spec + parser deliberately.
+//
+// The honest limit: correct-shape-wrong-content parses are not catchable
+// here. Human review of the surface stays the defense for those.
+//
+// CALIBRATION (template): these invariants are tuned PRESENCE-NOT-COUNT so a
+// fresh project with empty trackers, no archive, and no decisions boots with
+// ZERO alarms. What still fires is real drift: a malformed WHERE a list DOES
+// have items (a question missing its area, an FC missing its trigger, a doc
+// missing its tier), the Work Model / tiers / glossary shape, and the
+// styleguide's own completeness. As the project fills in, the surface stays
+// honest without ever nagging an empty list. (Doggo shipped stricter count
+// floors tuned to a mature repo — see EXTRACTION-MANIFEST §B4.)
+
+export interface DriftAlarm {
+  parser: string; // "getWorkModel"
+  source: string; // "CONTRIBUTING.md § The Work Model"
+  problem: string;
+}
+
+let cache: DriftAlarm[] | null = null;
+
+export function getDriftAlarms(): DriftAlarm[] {
+  // Memoized for the static build (one parse per worker, warn once). In dev
+  // the docs change under a live process, so recompute per request — a stale
+  // "all clear" while someone edits a parsed section defeats the point.
+  if (cache && process.env.NODE_ENV !== "development") return cache;
+  const alarms: DriftAlarm[] = [];
+  const alarm = (parser: string, source: string, problem: string) =>
+    alarms.push({ parser, source, problem });
+
+  /* ── CONTRIBUTING.md ─────────────────────────────────────────────── */
+
+  const wm = getWorkModel();
+  if (wm.modes.length !== 3) {
+    alarm("getWorkModel", "CONTRIBUTING.md § The Work Model", `parsed ${wm.modes.length} modes, expected 3`);
+  }
+  for (const m of wm.modes) {
+    const missing = [
+      !m.purpose && "Purpose",
+      !m.homeGround && "Home ground",
+      !m.careful && "Careful",
+      !m.gated && "Gated",
+      !m.during && "During",
+      m.open.length < 2 && "Opening ritual steps",
+      m.close.length < 2 && "Closing ritual steps",
+    ].filter(Boolean);
+    if (missing.length) {
+      alarm("getWorkModel", "CONTRIBUTING.md § The Work Model", `mode "${m.label}" missing: ${missing.join(", ")}`);
+    }
+  }
+  if (!wm.lede || wm.sharedRules.length < 3) {
+    alarm("getWorkModel", "CONTRIBUTING.md § The Work Model", "lede or shared rules parsed empty");
+  }
+
+  const tm = getTrackerModel();
+  if (tm.trackers.length < 2 || tm.flow.length < 2 || !tm.sharedRule) {
+    alarm(
+      "getTrackerModel",
+      "CONTRIBUTING.md § The Planning Trackers",
+      `parsed ${tm.trackers.length} trackers, ${tm.flow.length} flow rules — expected 2+ each and a shared rule`,
+    );
+  }
+
+  const tiers = getTiers();
+  const tierKeys = new Set(tiers.map((t) => t.key));
+  if (tiers.length !== 4 || !TIER_ORDER.every((k) => tierKeys.has(k))) {
+    alarm("getTiers", "CONTRIBUTING.md § Doc Tiers & Review Physics", `parsed ${tiers.length} tier rows, expected the 4 known tiers`);
+  }
+  for (const key of ["commitments", "working"] as const) {
+    if ((tiers.find((t) => t.key === key)?.staleAfterDays ?? null) === null) {
+      alarm("getTiers", "CONTRIBUTING.md § Doc Tiers & Review Physics", `"${key}" has no Stale-after threshold — staleness flags are dead`);
+    }
+  }
+  const physics = getTierPhysics();
+  const emptyPhysics = Object.entries(physics)
+    .filter(([, v]) => !v)
+    .map(([k]) => k);
+  if (emptyPhysics.length) {
+    alarm("getTierPhysics", "CONTRIBUTING.md § Doc Tiers & Review Physics", `empty fields: ${emptyPhysics.join(", ")}`);
+  }
+
+  if (getGlossary().length < 5) {
+    alarm("getGlossary", "CONTRIBUTING.md § Glossary", `parsed ${getGlossary().length} terms, expected 5+`);
+  }
+
+  /* ── The trackers ────────────────────────────────────────────────── */
+
+  // Empty trackers are the fresh-project norm, not drift — a populated list
+  // with a malformed row IS drift. So: no zero-checks here, only shape checks
+  // that run over whatever items exist.
+  const topics = getOpenQuestions();
+  const questions = topics.flatMap((t) => t.questions);
+  const missingMeta = questions.filter((q) => !q.area || !q.resolvesWhen).length;
+  if (missingMeta) {
+    alarm("getOpenQuestions", "planning/Open Questions & Assumptions Log.md", `${missingMeta} question(s) missing area or resolves-when`);
+  }
+
+  const fcs = getFutureItems();
+  const fcNoTrigger = fcs.filter((f) => !f.trigger).length;
+  if (fcNoTrigger) {
+    alarm("getFutureItems", "planning/Future Considerations.md", `${fcNoTrigger} FC item(s) missing a Trigger field`);
+  }
+
+  /* ── The record ──────────────────────────────────────────────────── */
+
+  const decisions = getDecisions();
+  const decNoWhat = decisions.filter((d) => !d.what).length;
+  if (decNoWhat) {
+    alarm("getDecisions", "decisions.md", `${decNoWhat} entrie(s) missing a What field`);
+  }
+
+  const roadmap = getRoadmap();
+  // An empty queue is valid (a fresh project has queued nothing yet), so the
+  // phase table isn't required — but goal + Where We Are always render.
+  if (!roadmap.goal || roadmap.whereWeAre.length === 0) {
+    alarm("getRoadmap", "ROADMAP.md", "goal or Where We Are parsed empty");
+  }
+  // The seed ↔ queued-row match is bidirectional and mode-agnostic (2026-07-20:
+  // the queue holds upcoming work of any mode; every queued row carries a seed,
+  // and the roadmap card IS the link to it). A rename on either side silently
+  // unlinks the card from its accumulating plan; a seedless row renders an
+  // inert card.
+  const seeds = getQueuedSeeds();
+  const phaseNames = new Set(roadmap.phases.map((p) => p.name));
+  const seedPhases = new Set(seeds.map((s) => s.phase));
+  for (const seed of seeds) {
+    if (!phaseNames.has(seed.phase)) {
+      alarm(
+        "getQueuedSeeds",
+        seed.relPath,
+        `phase "${seed.phase}" matches no queued ROADMAP row — the seed is orphaned`,
+      );
+    }
+  }
+  for (const p of roadmap.phases) {
+    // Every What's-Next row owes a seed: an opening phase removes its row from
+    // the ROADMAP in the same step that deletes its seed (Mode 1 ritual step 1
+    // — the roadmap is future-only; the active board is the open-phase pointer).
+    if (!seedPhases.has(p.name)) {
+      alarm(
+        "getQueuedSeeds",
+        "planning/queued/",
+        `queued ROADMAP row "${p.name}" has no seed — its card has nothing to link to`,
+      );
+    }
+  }
+
+  // No archive-count floor: a fresh project has closed no phases yet. The
+  // timeline simply renders empty until the first phase archives.
+
+  /* ── Frontmatter coverage (the registry contracts) ───────────────── */
+
+  const docs = getAllDocs();
+  // A low floor catches a broken walk (0 docs) without demanding a mature
+  // tree; the real check is the per-doc frontmatter coverage below.
+  if (docs.length < 3) {
+    alarm("getAllDocs", "docs/ (live tree)", `parsed ${docs.length} docs — the doc walk looks broken`);
+  }
+  const bad = (label: string, paths: string[]) => {
+    if (paths.length) alarm("getAllDocs", "doc frontmatter", `${label}: ${paths.join(", ")}`);
+  };
+  bad("missing tier", docs.filter((d) => !d.tier).map((d) => d.relPath));
+  bad("missing read-when", docs.filter((d) => !d.readWhen).map((d) => d.relPath));
+  bad("missing last-reviewed", docs.filter((d) => !d.lastReviewed).map((d) => d.relPath));
+  bad(
+    "feature doc missing feature-status",
+    docs.filter((d) => d.dir === "features" && !d.featureStatus).map((d) => d.relPath),
+  );
+  bad(
+    "strategy doc missing summary",
+    docs.filter((d) => d.dir === "strategy" && !d.summary).map((d) => d.relPath),
+  );
+
+  /* ── globals.css (the styleguide's source) ───────────────────────── */
+
+  const sg = getStyleguide();
+  if (sg.root.length < 12 || sg.theme.length < 8) {
+    alarm(
+      "getStyleguide",
+      "app/globals.css (banner comments)",
+      `parsed ${sg.root.length} :root sections + ${sg.theme.length} @theme sections, expected 12+/8+ — a banner-comment reformat regroups or drops tokens`,
+    );
+  }
+  if (sg.definedCount < 200) {
+    alarm("getStyleguide", "app/globals.css", `parsed ${sg.definedCount} token definitions, expected 200+`);
+  }
+  if (!sg.root.some((s) => s.title.includes("SEMANTIC TOKENS — Surface"))) {
+    alarm("getStyleguide", "app/globals.css", "the SEMANTIC TOKENS — Surface section didn't parse");
+  }
+  const typeScale = sg.theme.find((s) => s.title === "Font Size");
+  if (!typeScale || typeScale.tokens.length < 8) {
+    alarm("getStyleguide", "app/globals.css (@theme ── Font Size ──)", "the canonical --text-* scale didn't parse");
+  }
+  // Presence-not-count: the starter ships components/ui; overlays and layout
+  // are grown by the adopter. Alarm only if NO shared components exist at all
+  // (the reuse-first inventory would be empty).
+  const inventory = getComponentInventory();
+  if (inventory.every((g) => g.components.length === 0)) {
+    alarm("getComponentInventory", "components/ui · overlays · layout", "no shared components found in any dir");
+  }
+
+  for (const a of alarms) {
+    console.warn(`[system-surface] ${a.parser} (${a.source}): ${a.problem}`);
+  }
+  cache = alarms;
+  return alarms;
+}

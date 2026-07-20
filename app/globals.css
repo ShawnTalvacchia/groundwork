@@ -1,0 +1,742 @@
+@import "tailwindcss";
+
+/* ─────────────────────────────────────────────────────────────────────────
+   STARTER DESIGN SYSTEM
+
+   A clean, neutral semantic-token set — the "basic styleguide ready to
+   update." Everything on /system/styleguide is DERIVED from this file at
+   build time (lib/styleguide.ts): a token edit updates those pages in the
+   same commit, so the styleguide can't drift. To change a value, change it
+   here.
+
+   Structure (load-bearing — the styleguide parser + drift alarms read it):
+     1. @theme          — maps semantic tokens into Tailwind utilities
+     2. :root           — primitive ramps, then the semantic layer
+     3. dark override   — re-points the SEMANTIC layer for dark
+     4. mobile :root    — the handful of tokens that shift on small screens
+
+   The BANNER COMMENTS (==== / ---- / ── styles) are the styleguide's section
+   grouping. Reformatting them or moving tokens across blocks reshuffles the
+   styleguide — the /system drift banner flags structural breaks.
+   ───────────────────────────────────────────────────────────────────────── */
+
+@theme {
+  /* ── Colors: surfaces ── */
+  --color-surface-top: var(--surface-top);
+  --color-surface-popout: var(--surface-popout);
+  --color-surface-base: var(--surface-base);
+  --color-surface-inset: var(--surface-inset);
+  --color-surface-gray: var(--surface-gray);
+  --color-surface-disabled: var(--surface-disabled);
+  --color-surface-inverse: var(--surface-base-inverse);
+
+  /* ── Colors: foreground (text) ──
+     Named "fg" to avoid text-text-* doubling. */
+  --color-fg-primary: var(--text-primary);
+  --color-fg-secondary: var(--text-secondary);
+  --color-fg-tertiary: var(--text-tertiary);
+  --color-fg-gray: var(--text-gray);
+  --color-fg-light: var(--text-light);
+  --color-fg-inverse: var(--text-inverse);
+  --color-fg-white: var(--text-white);
+
+  /* ── Colors: brand ── */
+  --color-brand-subtle: var(--brand-subtle);
+  --color-brand-light: var(--brand-light);
+  --color-brand-main: var(--brand-main);
+  --color-brand-strong: var(--brand-strong);
+
+  /* ── Colors: borders ── */
+  --color-edge-light: var(--border-light);
+  --color-edge-regular: var(--border-regular);
+  --color-edge-strong: var(--border-strong);
+  --color-edge-stronger: var(--border-stronger);
+  --color-edge-strongest: var(--border-strongest);
+
+  /* ── Colors: status ── */
+  --color-success: var(--status-success-main);
+  --color-success-light: var(--status-success-light);
+  --color-success-strong: var(--status-success-strong);
+  --color-warning: var(--status-warning-main);
+  --color-warning-light: var(--status-warning-light);
+  --color-warning-strong: var(--status-warning-strong);
+  --color-error: var(--status-error-main);
+  --color-error-light: var(--status-error-light);
+  --color-error-strong: var(--status-error-strong);
+  --color-info: var(--status-info-main);
+  --color-info-light: var(--status-info-light);
+  --color-info-strong: var(--status-info-strong);
+
+  /* ── Spacing ── */
+  --spacing-tiny: var(--space-tiny);
+  --spacing-xs: var(--space-xs);
+  --spacing-sm: var(--space-sm);
+  --spacing-md: var(--space-md);
+  --spacing-lg: var(--space-lg);
+  --spacing-xl: var(--space-xl);
+  --spacing-2xl: var(--space-xxl);
+  --spacing-3xl: var(--space-xxxl);
+  --spacing-4xl: var(--space-jumbo-1);
+  --spacing-5xl: var(--space-jumbo-2);
+  --spacing-6xl: var(--space-jumbo-3);
+
+  /* ── Border Radius ── */
+  --radius-none: var(--radius-none);
+  --radius-tiny: var(--radius-tiny);
+  --radius-xxs: var(--radius-xxs);
+  --radius-xs: var(--radius-xs);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-full: var(--radius-circle);
+  --radius-panel: var(--radius-panel);
+  --radius-form: var(--radius-form);
+  --radius-pill: var(--radius-pill);
+
+  /* ── Shadows ── */
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+  --shadow-modal: var(--shadow-modal);
+
+  /* ── Font Family ── */
+  --font-heading: var(--font-heading);
+  --font-body: var(--font-body);
+  --font-mono: var(--font-mono);
+
+  /* ── Font Size ──
+     The single source of truth for the `--text-*` scale. Values come from the
+     raw `--font-size-*` primitives in :root. Runtime scale: 2xs 12 · xs 13 ·
+     sm 15 · base 17 · lg 18 · xl 20 · 2xl 24 · 3xl 28 · 4xl 32 · 5xl 48. */
+  --text-2xs: var(--font-size-caption); /* 12px — micro UI labels: nav/tab labels, badge counts, eyebrows (short, non-reading) */
+  --text-xs: var(--font-size-body-sm); /* 13px — metadata, captions, timestamps, pills (reading floor) */
+  --text-sm: var(--font-size-body-reg); /* 15px — body workhorse (primary content) */
+  --text-base: var(--font-size-body-md); /* 17px — large body / emphasis / lead-in */
+  --text-md: var(--font-size-body-md); /* 17px — legacy alias == text-base */
+  --text-lg: var(--font-size-body-lg); /* 18px — small headings */
+  --text-xl: var(--font-size-h4); /* 20px */
+  --text-2xl: var(--font-size-h3); /* 24px */
+  --text-3xl: var(--font-size-h3-plus); /* 28px */
+  --text-4xl: var(--font-size-h2); /* 32px */
+  --text-5xl: var(--font-size-h1); /* 48px */
+
+  /* ── Font Weight ── */
+  --font-weight-light: var(--weight-light);
+  --font-weight-normal: var(--weight-regular);
+  --font-weight-medium: var(--weight-medium);
+  --font-weight-semibold: var(--weight-semibold);
+  --font-weight-bold: var(--weight-bold);
+
+  /* ── Line Height ── */
+  --leading-tight: var(--leading-tight);
+  --leading-snug: var(--leading-snug);
+  --leading-normal: var(--leading-normal);
+  --leading-relaxed: var(--leading-relaxed);
+
+  /* ── Letter Spacing ── */
+  --tracking-tight: var(--tracking-tight);
+  --tracking-normal: var(--tracking-normal);
+  --tracking-wide: var(--tracking-wide);
+
+  /* ── Breakpoints ── */
+  --breakpoint-sm: 480px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 900px;
+  --breakpoint-xl: 1024px;
+  --breakpoint-2xl: 1280px;
+
+  /* ── Container max-widths ──
+     Tailwind v4's `max-w-*` utilities resolve from this namespace. */
+  --container-narrow: 400px;
+  --container-prose: 640px;
+  --container-page: 800px;
+}
+
+/* ============================================
+   DESIGN TOKENS
+
+   PARSED by lib/styleguide.ts → /system/styleguide.
+   The @theme block above, this :root, the dark override, and the mobile
+   :root are parsed at build time, and the BANNER COMMENTS are the
+   styleguide's section grouping.
+   ============================================ */
+
+:root {
+  /* ================================================
+     PRIMITIVE TOKENS
+     Do not use directly in components —
+     use the semantic aliases below.
+     ================================================ */
+
+  /* ---- _Neutral ---- */
+  --neutral-white: #ffffff;
+  --neutral-12: #fbfbfc;
+  --neutral-25: #f7f8f9;
+  --neutral-50: #f1f3f5;
+  --neutral-75: #e9ecef;
+  --neutral-100: #e2e5e9;
+  --neutral-150: #d5dae0;
+  --neutral-200: #c3cad2;
+  --neutral-300: #a7b0bb;
+  --neutral-400: #8892a0;
+  --neutral-500: #6b7280;
+  --neutral-600: #565e6b;
+  --neutral-700: #434a54;
+  --neutral-750: #373d46;
+  --neutral-800: #2c313a;
+  --neutral-850: #21262e;
+  --neutral-900: #171b21;
+  --neutral-950: #0d1013;
+  --neutral-black: #000000;
+
+  /* ---- _Brand (indigo — swap for your own accent) ---- */
+  --brand-25: #eef2ff;
+  --brand-50: #e0e7ff;
+  --brand-100: #c7d2fe;
+  --brand-200: #a5b4fc;
+  --brand-300: #818cf8;
+  --brand-400: #6366f1;
+  --brand-500: #4f46e5;
+  --brand-600: #4338ca;
+  --brand-700: #3730a3;
+  --brand-800: #312e81;
+  --brand-900: #1e1b4b;
+
+  /* ---- _Status: Success ---- */
+  --success-25: #ecfdf5;
+  --success-50: #d1fae5;
+  --success-100: #a7f3d0;
+  --success-300: #6ee7b7;
+  --success-500: #10b981;
+  --success-600: #059669;
+  --success-850: #064e3b;
+
+  /* ---- _Status: Warning ---- */
+  --warning-25: #fffbeb;
+  --warning-50: #fef3c7;
+  --warning-100: #fde68a;
+  --warning-300: #fcd34d;
+  --warning-500: #f59e0b;
+  --warning-600: #d97706;
+  --warning-850: #78350f;
+
+  /* ---- _Status: Error ---- */
+  --error-25: #fef2f2;
+  --error-50: #fee2e2;
+  --error-100: #fecaca;
+  --error-300: #fca5a5;
+  --error-500: #ef4444;
+  --error-600: #dc2626;
+  --error-850: #7f1d1d;
+
+  /* ---- _Status: Info ---- */
+  --info-25: #eff6ff;
+  --info-50: #dbeafe;
+  --info-100: #bfdbfe;
+  --info-300: #93c5fd;
+  --info-500: #3b82f6;
+  --info-600: #2563eb;
+  --info-850: #1e3a8a;
+
+  /* ---- _Transparent: Dark (black overlay) ---- */
+  --transparent-dark-0: rgba(0, 0, 0, 0);
+  --transparent-dark-4: rgba(0, 0, 0, 0.039);
+  --transparent-dark-8: rgba(0, 0, 0, 0.078);
+  --transparent-dark-10: rgba(0, 0, 0, 0.1);
+  --transparent-dark-16: rgba(0, 0, 0, 0.161);
+  --transparent-dark-24: rgba(0, 0, 0, 0.239);
+  --transparent-dark-32: rgba(0, 0, 0, 0.322);
+  --transparent-dark-40: rgba(0, 0, 0, 0.4);
+  --transparent-dark-64: rgba(0, 0, 0, 0.639);
+  --transparent-dark-80: rgba(0, 0, 0, 0.8);
+  --transparent-dark-90: rgba(0, 0, 0, 0.9);
+
+  /* ---- _Transparent: Light (white overlay) ---- */
+  --transparent-light-4: rgba(255, 255, 255, 0.039);
+  --transparent-light-8: rgba(255, 255, 255, 0.078);
+  --transparent-light-16: rgba(255, 255, 255, 0.161);
+  --transparent-light-32: rgba(255, 255, 255, 0.322);
+  --transparent-light-40: rgba(255, 255, 255, 0.4);
+  --transparent-light-64: rgba(255, 255, 255, 0.639);
+  --transparent-light-80: rgba(255, 255, 255, 0.8);
+
+  /* ================================================
+     SEMANTIC TOKENS — Surface
+     ================================================ */
+
+  --surface-top: var(--neutral-white); /* #ffffff — inputs, cards, modals */
+  --surface-popout: var(--neutral-12); /* #fbfbfc — elevated panels */
+  --surface-base: var(--neutral-50); /* #f1f3f5 — page background */
+  --surface-inset: var(--neutral-75); /* #e9ecef — sunken / inset areas */
+  --surface-gray: var(--neutral-200); /* #c3cad2 — muted surfaces */
+  --surface-disabled: var(--neutral-300); /* #a7b0bb — disabled backgrounds */
+  --surface-base-inverse: var(--neutral-800); /* #2c313a — dark inverse surfaces */
+  --surface-neutral-dark: var(--neutral-900); /* #171b21 — deepest dark surfaces */
+
+  /* ================================================
+     SEMANTIC TOKENS — Brand
+     ================================================ */
+
+  --brand-subtle: var(--brand-25); /* #eef2ff — selected / active backgrounds */
+  --brand-light: var(--brand-400); /* #6366f1 — mid-tone brand accent */
+  --brand-main: var(--brand-600); /* #4338ca — primary brand colour */
+  --brand-strong: var(--brand-700); /* #3730a3 — hover / emphasis on brand */
+
+  /* ================================================
+     SEMANTIC TOKENS — Text
+     ================================================ */
+
+  --text-primary: var(--neutral-850); /* #21262e */
+  --text-secondary: var(--neutral-700); /* #434a54 */
+  --text-tertiary: var(--neutral-500); /* #6b7280 */
+  --text-gray: var(--neutral-400); /* #8892a0 — inactive tabs, de-emphasized */
+  --text-light: var(--neutral-300); /* #a7b0bb */
+  --text-inverse: var(--neutral-25); /* #f7f8f9 */
+  --text-white: var(--neutral-white); /* #ffffff */
+  --text-black: var(--neutral-950); /* #0d1013 */
+
+  /* ================================================
+     SEMANTIC TOKENS — Border
+     ================================================ */
+
+  /* Colours */
+  --border-lightest: var(--neutral-white); /* #ffffff */
+  --border-light: var(--neutral-50); /* #f1f3f5 */
+  --border-regular: var(--neutral-75); /* #e9ecef */
+  --border-strong: var(--neutral-100); /* #e2e5e9 */
+  --border-stronger: var(--neutral-150); /* #d5dae0 */
+  --border-strongest: var(--neutral-400); /* #8892a0 */
+
+  /* Widths */
+  --border-width-reg: 1px;
+  --border-width-lg: 2px;
+  --border-width-xl: 3px;
+  --border-width-xxl: 4px;
+
+  /* ================================================
+     SEMANTIC TOKENS — Interaction
+     ================================================ */
+
+  --interaction-hover-lighten: var(--transparent-light-16); /* overlay on dark bg */
+  --interaction-hover-darken: var(--transparent-dark-8); /* overlay on light bg */
+  --interaction-hover-subtle: var(--transparent-dark-4); /* gentlest overlay */
+
+  /* ================================================
+     CONVENIENCE ALIASES — shorthand tokens used in
+     component-level CSS; map to semantic tokens above
+     ================================================ */
+
+  --surface-page: var(--surface-top); /* nav bars, sticky headers */
+  --surface-hover: var(--interaction-hover-darken); /* subtle hover on light surfaces */
+  --border-subtle: var(--border-strong); /* light dividers */
+  --border-default: var(--border-stronger); /* standard visible borders */
+  --text-muted: var(--text-tertiary); /* de-emphasised text */
+
+  /* ================================================
+     SEMANTIC TOKENS — Status
+     ================================================ */
+
+  --status-success-light: var(--success-25);
+  --status-success-main: var(--success-500);
+  --status-success-strong: var(--success-600);
+
+  --status-warning-light: var(--warning-25);
+  --status-warning-main: var(--warning-500);
+  --status-warning-strong: var(--warning-600);
+
+  --status-error-light: var(--error-25);
+  --status-error-main: var(--error-500);
+  --status-error-strong: var(--error-600);
+  --status-error-surface: var(--status-error-light);
+  --status-error-border: var(--status-error-main);
+  --status-error-text: var(--status-error-strong);
+
+  --status-info-light: var(--info-25);
+  --status-info-main: var(--info-500);
+  --status-info-strong: var(--info-600);
+  --status-info-600: var(--info-600);
+
+  /* Legacy shorthands */
+  --success: var(--status-success-main);
+  --error: var(--status-error-main);
+
+  /* ================================================
+     RADIUS
+     ================================================ */
+
+  --radius-none: 0px;
+  --radius-tiny: 2px;
+  --radius-xxs: 4px;
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-circle: 9999px;
+
+  /* Semantic aliases */
+  --radius-panel: var(--radius-md); /* panels, cards, modal sheets */
+  --radius-form: var(--radius-xl); /* floating form modals */
+  --radius-pill: var(--radius-circle); /* pill buttons / badges */
+
+  /* ================================================
+     SPACING
+     ================================================ */
+
+  --space-tiny: 2px;
+  --space-xs: 6px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 20px;
+  --space-xxl: 24px;
+  --space-xxxl: 32px;
+  --space-jumbo-1: 40px;
+  --space-jumbo-2: 64px;
+  --space-jumbo-3: 80px;
+
+  /* Numeric aliases — legacy compat */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ================================================
+     TYPOGRAPHY — Font families & weights
+     ================================================ */
+
+  --font-heading: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Menlo", "Consolas", monospace;
+
+  --weight-light: 300;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --weight-extrabold: 800;
+
+  /* ================================================
+     TYPOGRAPHY — Heading sizes  (desktop defaults)
+     ================================================ */
+
+  --font-size-h1: 48px;
+  --font-size-h2: 32px;
+  --font-size-h3-plus: 28px;
+  --font-size-h3: 24px;
+  --font-size-h4: 20px;
+  --font-size-tagline: 16px;
+
+  /* ================================================
+     TYPOGRAPHY — Body sizes  (desktop defaults)
+     ================================================ */
+
+  /* Three body tiers — 13 / 15 / 17 — with 13 the reading floor. The caption
+     size (12) is for micro UI labels only, below the reading floor. New
+     callsites use the `--text-*` scale, not these raw primitives. */
+  --font-size-body-xxl: 32px;
+  --font-size-body-lg: 18px; /* small heading / large body (→ text-lg) */
+  --font-size-body-md: 17px; /* large body / emphasis (→ text-base) */
+  --font-size-body-reg: 15px; /* body workhorse (→ text-sm) */
+  --font-size-body-sm: 13px; /* small / metadata — the READING floor (→ text-xs) */
+  --font-size-caption: 12px; /* micro UI-label size, below the reading floor (→ text-2xs) */
+
+  /* ================================================
+     TYPOGRAPHY — Line heights & letter spacing
+     ================================================ */
+
+  --leading-tight: 1.2; /* headings */
+  --leading-snug: 1.3; /* tight body / multi-line labels */
+  --leading-normal: 1.35; /* UI / compact body */
+  --leading-relaxed: 1.5; /* body text */
+
+  --tracking-tight: -0.01em;
+  --tracking-normal: 0em;
+  --tracking-wide: 0.04em;
+  --tracking-wider: 0.05em;
+
+  /* ================================================
+     SHADOWS
+     ================================================ */
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 6%);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.12);
+  --shadow-modal: 0 2px 12px rgba(0, 0, 0, 0.06);
+
+  color-scheme: light;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   DARK THEME  ([data-theme="dark"])
+
+   Light is authoritative; dark re-points the SEMANTIC layer (surfaces dark,
+   text light, borders LIGHTER than the surface they sit on) with correct
+   dark-mode relationships — NOT a naive inversion. It also re-points the
+   neutral PRIMITIVE ramp as a safety net so callsites that reach past the
+   semantic layer to `var(--neutral-N)` flip too. The light+dark walk in the
+   styleguide surfaces any that land wrong.
+   ══════════════════════════════════════════════════════════════════════════ */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* ---- Neutral primitive ramp — re-pointed for dark (safety net for
+     direct `var(--neutral-N)` callsites). ---- */
+  --neutral-white: #1c1f24;
+  --neutral-12: #21252b;
+  --neutral-25: #21252b;
+  --neutral-50: #16181c;
+  --neutral-75: #272b31;
+  --neutral-100: #30353c;
+  --neutral-150: #3a4049;
+  --neutral-200: #464d57;
+  --neutral-300: #5e6773;
+  --neutral-400: #808a97;
+  --neutral-500: #9aa3af;
+  --neutral-600: #b4bcc6;
+  --neutral-700: #c8cfd7;
+  --neutral-750: #d4dae0;
+  --neutral-800: #e1e5ea;
+  --neutral-850: #edeff2;
+  --neutral-900: #f4f6f8;
+  --neutral-950: #fafbfc;
+  --neutral-black: #ffffff;
+
+  /* ---- Status + brand PRIMITIVE ramps — re-pointed for dark (safety net).
+     Low steps → dark tints (backgrounds), mid → the saturated colour, high
+     steps → lifted for text on dark. ---- */
+  --success-25: #16271d;
+  --success-50: #1a2f22;
+  --success-100: #1f3a29;
+  --success-300: #57b87d;
+  --success-500: #34d399;
+  --success-600: #6ee7b7;
+  --success-850: #6ee7b7;
+  --warning-25: #2a2410;
+  --warning-50: #33290f;
+  --warning-100: #3d3211;
+  --warning-300: #c79a2e;
+  --warning-500: #fbbf24;
+  --warning-600: #fcd34d;
+  --warning-850: #fcd34d;
+  --error-25: #2a1614;
+  --error-50: #331a17;
+  --error-100: #3d1f1b;
+  --error-300: #e0574c;
+  --error-500: #f87171;
+  --error-600: #fca5a5;
+  --error-850: #fca5a5;
+  --info-25: #191e33;
+  --info-50: #1f2540;
+  --info-100: #252c4d;
+  --info-300: #6b80e0;
+  --info-500: #60a5fa;
+  --info-600: #93c5fd;
+  --info-850: #bfdbfe;
+  --brand-25: #1e1b3a;
+  --brand-50: #24204a;
+  --brand-400: #818cf8;
+  --brand-600: #818cf8;
+  --brand-700: #a5b4fc;
+
+  /* ---- Surfaces (layered dark; darker = lower) ---- */
+  --surface-base: #131519;
+  --surface-top: #1c1f24;
+  --surface-popout: #24282e;
+  --surface-inset: #0e1013;
+  --surface-gray: #363c44;
+  --surface-disabled: #282c32;
+  --surface-base-inverse: #edeff2;
+  --surface-neutral-dark: #090a0c;
+
+  /* ---- Text (light on dark) ---- */
+  --text-primary: #edeff2;
+  --text-secondary: #b7bec8;
+  --text-tertiary: #8a929e;
+  --text-gray: #6c747f;
+  --text-light: #545b65;
+  --text-inverse: #1c1f24;
+  --text-white: #ffffff;
+  --text-black: #ffffff;
+
+  /* ---- Borders — LIGHTER than the surface they sit on (the key dark rule) ---- */
+  --border-lightest: #24282e;
+  --border-light: #2a2e34;
+  --border-regular: #343941;
+  --border-strong: #3f454e;
+  --border-stronger: #4c525c;
+  --border-strongest: #6c747f;
+
+  /* ---- Brand — lifted for contrast on dark ---- */
+  --brand-subtle: #24204a;
+  --brand-light: #818cf8;
+  --brand-main: #818cf8;
+  --brand-strong: #a5b4fc;
+
+  /* ---- Interaction — on dark, "hover" lightens ---- */
+  --interaction-hover-lighten: rgba(255, 255, 255, 0.09);
+  --interaction-hover-darken: rgba(255, 255, 255, 0.06);
+  --interaction-hover-subtle: rgba(255, 255, 255, 0.04);
+
+  /* ---- Status — dark-tinted bg / lifted text ---- */
+  --status-success-light: #16271d;
+  --status-success-main: #34d399;
+  --status-success-strong: #6ee7b7;
+  --status-warning-light: #2a2410;
+  --status-warning-main: #fbbf24;
+  --status-warning-strong: #fcd34d;
+  --status-error-light: #2a1614;
+  --status-error-main: #f87171;
+  --status-error-strong: #fca5a5;
+  --status-error-surface: #2a1614;
+  --status-error-border: #f87171;
+  --status-error-text: #fca5a5;
+  --status-info-light: #191e33;
+  --status-info-main: #60a5fa;
+  --status-info-strong: #bfdbfe;
+  --status-info-600: #93c5fd;
+
+  /* ---- Shadows — deeper on dark so elevation still reads ---- */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 35%);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.5);
+  --shadow-modal: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   MOBILE  (≤ 767px)
+   The handful of tokens that shift on small screens — the styleguide's mobile
+   column renders the difference. Type steps down a notch for dense phones.
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+  :root {
+    /* ---- Type: tighter on mobile ---- */
+    --font-size-h1: 36px;
+    --font-size-h2: 28px;
+    --font-size-h3: 22px;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   BASE + SHARED COMPONENT CLASSES
+   Plain CSS the starter components lean on. Utilities come from Tailwind via
+   the @theme block above; these are the few hand-written classes.
+   ───────────────────────────────────────────────────────────────────────── */
+
+body {
+  background: var(--surface-base);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Pill — a selectable option chip (see components/ui/PillToggle). */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-md);
+  border: 1px solid var(--border-stronger);
+  border-radius: var(--radius-pill);
+  background: var(--surface-top);
+  color: var(--text-secondary);
+  font-weight: var(--weight-medium);
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background 0.12s ease,
+    border-color 0.12s ease,
+    color 0.12s ease;
+}
+.pill:hover {
+  border-color: var(--border-strongest);
+  color: var(--text-primary);
+}
+.pill.active {
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+  font-weight: var(--weight-semibold);
+}
+
+/* TabBar — a segmented pill control (see components/ui/TabBar). Used by the
+   /system header's main tabs and the ThemeToggle. */
+.tab-bar-container {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: 2px;
+  background: var(--surface-inset);
+  border-radius: var(--radius-pill);
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.tab-bar-container::-webkit-scrollbar {
+  display: none;
+}
+.tab-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  padding: 0 var(--space-lg);
+  flex-shrink: 0;
+  font-family: var(--font-body), sans-serif;
+  font-weight: var(--weight-semibold);
+  font-size: var(--text-xs);
+  line-height: 1.35;
+  color: var(--text-gray);
+  background: none;
+  border: none;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.tab-main[data-active] {
+  color: var(--text-primary);
+  font-weight: var(--weight-bold);
+  background: var(--surface-top);
+  box-shadow: var(--shadow-xs);
+}
+/* Compact segmented control — a smaller TabBar for inline selectors (the
+   theme picker). Height matches a pill badge. */
+.tab-bar--compact .tab-main {
+  height: 30px;
+  padding: 0 var(--space-md);
+}
+/* Tab badge — small brand-filled count next to a tab label. */
+.tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  margin-left: var(--space-xs);
+  padding: 0 5px;
+  border-radius: var(--radius-pill);
+  background: var(--brand-main);
+  color: var(--text-white);
+  font-size: 11px;
+  font-weight: var(--weight-bold);
+  line-height: 1;
+}

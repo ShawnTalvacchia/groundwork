@@ -1,0 +1,679 @@
+/* /system — the knowledge-system surface. Semantic tokens only (dark mode
+   flips them); patterns here need pseudo-classes/sticky, hence a stylesheet
+   (styleguide.css precedent). Layout inside pages is Tailwind utilities. */
+
+/* Standalone routes clip the document to the viewport (html/body height
+   100%), so this layout is its own scroll container — same pattern as the
+   styleguide's .sg-scroll. */
+.sys-layout {
+  height: 100vh;
+  overflow-y: auto;
+  background: var(--surface-base);
+  color: var(--text-primary);
+}
+
+.sys-layout h1,
+.sys-layout h2,
+.sys-layout h3 {
+  font-family: var(--font-heading), sans-serif;
+}
+
+.sys-main {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: var(--space-5) var(--space-4) var(--space-16);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+/* ── Nav ── */
+
+/* Header + both tab rows stick together; the body scrolls under. */
+.sys-chrome {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.sys-nav {
+  background: var(--surface-top);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.sys-nav-inner {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  /* Roomy: the theme control is itself a segmented pill bar, so it needs
+     air to read as chrome rather than a third tab row. */
+  gap: var(--space-5);
+}
+
+/* App-style page header: title left, (future) action right */
+.sys-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.sys-header-brand {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+/* Text wordmark in the header brand slot (swap for an <img> logo). */
+.sys-header-logo {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  font-family: var(--font-heading), sans-serif;
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+/* Main tabs fill the row (precedent: .panel-tabbar .tab-main) */
+.sys-tab-fill {
+  width: 100%;
+}
+
+.sys-tab-fill .tab-main {
+  flex: 1;
+}
+
+/* Group subtabs — a body band whose rule spans the viewport while the tabs
+   sit on the content column. Active = darker, thicker border (neutral, never
+   brand — brand is reserved for the main pills). */
+.sys-subtabs {
+  background: var(--surface-base);
+  border-bottom: 1px solid var(--border-regular);
+}
+
+.sys-subtabs-inner {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+  display: flex;
+  gap: var(--space-4);
+  /* Fallback only — the tabs are sized to fit every viewport (see the
+     narrow-screen block below). overflow-y is explicit because `overflow-x:
+     auto` alone makes the other axis compute to `auto`, which turned the
+     active tab's 1px underline overhang into a stray vertical scroll. */
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}
+
+.sys-subtabs-inner::-webkit-scrollbar {
+  display: none;
+}
+
+.sys-subtab {
+  padding: var(--space-3) var(--space-3);
+  color: var(--text-tertiary);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+}
+
+.sys-subtab:hover {
+  color: var(--text-primary);
+}
+
+.sys-subtab[data-active] {
+  color: var(--text-primary);
+  font-weight: var(--weight-semibold);
+  border-bottom-color: var(--text-primary);
+}
+
+/* Breadcrumb mode — the trail replaces the tabs on drill-ins. The current
+   crumb is emphasis without an underline: it's where you are, not a tab. */
+.sys-subtab[data-current] {
+  color: var(--text-primary);
+  font-weight: var(--weight-semibold);
+}
+
+.sys-subtab-sep {
+  align-self: center;
+  color: var(--text-light);
+}
+
+/* Both bars share one size, scaling up on wider viewports. Scoped to /system
+   so the shared TabBar (10+ product surfaces, --text-xs) is untouched. */
+.sys-tab-fill .tab-main,
+.sys-subtab,
+.sys-subtab-sep {
+  font-size: var(--text-sm);
+}
+
+@media (min-width: 900px) {
+  .sys-tab-fill .tab-main,
+  .sys-subtab,
+  .sys-subtab-sep {
+    font-size: var(--text-base);
+  }
+
+  .sys-tab-fill .tab-main {
+    height: 42px;
+  }
+}
+
+
+/* ── Hub tiles ── */
+
+.sys-cluster-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  text-decoration: none;
+}
+
+.sys-cluster-label:hover span {
+  color: var(--brand-strong);
+}
+
+.sys-tile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--space-3);
+}
+
+.sys-tile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  background: var(--surface-top);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-panel);
+  text-decoration: none;
+  transition: border-color 120ms ease;
+}
+
+.sys-tile:hover {
+  border-color: var(--brand-main);
+}
+
+.sys-tile-wide {
+  grid-column: 1 / -1;
+}
+
+/* ── Cards, rows, pills ── */
+
+.sys-card {
+  background: var(--surface-top);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-panel);
+  padding: var(--space-4);
+}
+
+.sys-row-link {
+  text-decoration: none;
+  color: inherit;
+  border-radius: var(--radius-sm);
+}
+
+.sys-row-link:hover {
+  background: var(--surface-inset);
+}
+
+.sys-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--space-2);
+  height: 20px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-regular);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* Tier ramp — solidity reads down the ladder without any pill jumping
+   weight. (Bedrock previously used --text-primary: a near-black 1px line
+   next to commitments' #e5e5e5 read as a *thicker* pill, not just a darker
+   one. Same 20px box, wildly different contrast.) */
+.sys-pill-tier-bedrock {
+  border-color: var(--border-strongest);
+  color: var(--text-primary);
+}
+
+.sys-pill-tier-commitments {
+  border-color: var(--border-stronger);
+}
+
+.sys-pill-tier-working {
+  border-color: var(--brand-main);
+  color: var(--brand-strong);
+}
+
+.sys-pill-tier-surface {
+  border-style: dashed;
+  color: var(--text-tertiary);
+}
+
+.sys-pill-stale {
+  border-color: var(--status-warning-main);
+  color: var(--status-warning-main);
+}
+
+.sys-id {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+.sys-code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85em;
+  background: var(--surface-inset);
+  border-radius: var(--radius-xs);
+  padding: 0 var(--space-1);
+}
+
+/* Expandable topic/entry cards (native <details>) */
+
+.sys-details {
+  border-bottom: 1px solid var(--border-light);
+}
+
+.sys-details > summary {
+  cursor: pointer;
+  list-style: none;
+  padding: var(--space-3) 0;
+}
+
+.sys-details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.sys-details > summary .sys-caret {
+  transition: transform 120ms ease;
+  color: var(--text-light);
+}
+
+.sys-details[open] > summary .sys-caret {
+  transform: rotate(90deg);
+}
+
+/* ── Timeline ── */
+
+.sys-timeline {
+  display: flex;
+  flex-direction: column;
+}
+
+.sys-timeline-item {
+  position: relative;
+  padding: 0 0 var(--space-5) var(--space-5);
+  border-left: 1px solid var(--border-regular);
+}
+
+.sys-timeline-item::before {
+  content: "";
+  position: absolute;
+  left: -4.5px;
+  top: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-circle);
+  background: var(--brand-main);
+}
+
+.sys-timeline-item:last-child {
+  border-left-color: transparent;
+}
+
+/* ── Doc detail (react-markdown output) ── */
+
+.sys-doc {
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  color: var(--text-primary);
+}
+
+.sys-doc h1,
+.sys-doc h2,
+.sys-doc h3,
+.sys-doc h4 {
+  /* #fragment landings clear the sticky chrome (header + subtab band) */
+  scroll-margin-top: 140px;
+  font-family: var(--font-heading), sans-serif;
+  font-weight: var(--weight-semibold);
+  margin: var(--space-6) 0 var(--space-2);
+  line-height: var(--leading-snug);
+}
+
+.sys-doc h1 {
+  font-size: var(--text-2xl);
+  margin-top: 0;
+}
+
+.sys-doc h2 {
+  font-size: var(--text-xl);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--border-light);
+}
+
+.sys-doc h3 {
+  font-size: var(--text-lg);
+}
+
+.sys-doc h4 {
+  font-size: var(--text-sm);
+}
+
+.sys-doc p,
+.sys-doc ul,
+.sys-doc ol {
+  margin: 0 0 var(--space-3);
+}
+
+.sys-doc ul,
+.sys-doc ol {
+  padding-left: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.sys-doc li > ul,
+.sys-doc li > ol {
+  margin: var(--space-1) 0 0;
+}
+
+.sys-doc a {
+  color: var(--brand-strong);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.sys-doc code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85em;
+  background: var(--surface-inset);
+  border-radius: var(--radius-xs);
+  padding: 0 var(--space-1);
+}
+
+.sys-doc pre {
+  background: var(--surface-inset);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+  overflow-x: auto;
+  margin: 0 0 var(--space-3);
+}
+
+.sys-doc pre code {
+  background: none;
+  padding: 0;
+}
+
+.sys-doc blockquote {
+  margin: 0 0 var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-left: 3px solid var(--brand-main);
+  background: var(--surface-inset);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  color: var(--text-secondary);
+}
+
+.sys-doc table {
+  border-collapse: collapse;
+  margin: 0 0 var(--space-3);
+  display: block;
+  overflow-x: auto;
+  font-size: var(--text-xs);
+}
+
+.sys-doc th,
+.sys-doc td {
+  border: 1px solid var(--border-light);
+  padding: var(--space-1) var(--space-2);
+  text-align: left;
+  vertical-align: top;
+}
+
+.sys-doc th {
+  background: var(--surface-inset);
+  font-weight: var(--weight-semibold);
+}
+
+.sys-doc hr {
+  border: none;
+  border-top: 1px solid var(--border-light);
+  margin: var(--space-5) 0;
+}
+
+/* ── Method: how we work ── */
+
+/* The phase arc — Open → Work → Close */
+.sys-arc {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 700px) {
+  .sys-arc {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.sys-arc-step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  background: var(--surface-inset);
+  border-radius: var(--radius-panel);
+}
+
+/* Chevron between steps (wide viewports only) */
+@media (min-width: 700px) {
+  .sys-arc-step:not(:last-child)::after {
+    content: "→";
+    position: absolute;
+    right: calc(var(--space-3) * -1);
+    top: 50%;
+    transform: translate(50%, -50%);
+    color: var(--text-light);
+    font-size: var(--text-sm);
+  }
+}
+
+/* Mode card: an accent rail keeps the three readable at a glance */
+.sys-mode {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-4) var(--space-4) var(--space-5);
+  background: var(--surface-top);
+  border: 1px solid var(--border-light);
+  border-left: 3px solid var(--border-strong);
+  border-radius: var(--radius-panel);
+}
+
+.sys-mode--product {
+  border-left-color: var(--brand-main);
+}
+
+.sys-mode--system {
+  border-left-color: var(--text-primary);
+}
+
+.sys-mode--side {
+  border-left-color: var(--border-strong);
+  border-left-style: dashed;
+}
+
+.sys-mode-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-circle);
+  background: var(--surface-inset);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  color: var(--text-secondary);
+}
+
+/* Scope cards — the mode's three touch bands (home ground / careful / gated).
+   Distinguished by icon and label, never colour: this surface spends brand on
+   "alive" and amber on "stale", and nothing else. A green/red pair here would
+   buy a moment's legibility and cost both signals. */
+.sys-scope {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  background: var(--surface-inset);
+  border-radius: var(--radius-sm);
+}
+
+.sys-scope-head {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+/* The ritual — folded away until you're opening or closing a phase. */
+.sys-ritual {
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-light);
+}
+
+.sys-ritual > summary {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  cursor: pointer;
+  list-style: none;
+}
+
+.sys-ritual > summary::-webkit-details-marker {
+  display: none;
+}
+
+.sys-ritual > summary:hover .sys-caret {
+  color: var(--text-secondary);
+}
+
+.sys-ritual > summary .sys-caret {
+  transition: transform 120ms ease;
+  color: var(--text-light);
+}
+
+.sys-ritual[open] > summary .sys-caret {
+  transform: rotate(90deg);
+}
+
+.sys-step-num {
+  flex-shrink: 0;
+  min-width: 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--text-2xs);
+  color: var(--text-light);
+  padding-top: 3px;
+}
+
+/* Tiers — the left rail thickens with how guarded the tier is. No indent:
+   a tier isn't a rung to climb, it's what the doc is about. Rail colours
+   match the tier pills so the two readings agree. */
+.sys-tier-rung {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface-top);
+  border: 1px solid var(--border-light);
+  border-left: 1px solid var(--border-light);
+  border-radius: var(--radius-panel);
+}
+
+.sys-tier-rung--bedrock {
+  border-left: 6px solid var(--border-strongest);
+}
+
+.sys-tier-rung--commitments {
+  border-left: 4px solid var(--border-stronger);
+}
+
+.sys-tier-rung--working {
+  border-left: 2px solid var(--brand-main);
+}
+
+.sys-tier-rung--surface {
+  border-style: dashed;
+  background: none;
+}
+
+/* The guard line — what it takes to reopen */
+/* To-change / Check-up: stacked while narrow — side by side they wrap into
+   two ragged columns that read worse than one list. Row from 40rem up. */
+.sys-tier-guard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-top: var(--space-1);
+  padding-top: var(--space-2);
+  border-top: 1px dashed var(--border-regular);
+  width: 100%;
+}
+
+@media (min-width: 40rem) {
+  .sys-tier-guard {
+    flex-direction: row;
+    align-items: baseline;
+    gap: var(--space-6);
+  }
+  .sys-tier-guard > * {
+    flex: 1 1 0;
+  }
+}
+
+/* Narrow screens: fit both tab rows without scrolling in either direction.
+   Measured worst case (Structure: Overview/Features/Strategy/Styleguide) —
+   434px of tabs in a 375px viewport. Trimming type, padding and gap brings
+   it to ~324px inside the 343px content box. */
+@media (max-width: 560px) {
+  .sys-tab-fill .tab-main,
+  .sys-subtab,
+  .sys-subtab-sep {
+    font-size: var(--text-xs);
+  }
+
+  .sys-tab-fill .tab-main {
+    padding: 0 var(--space-2);
+  }
+
+  /* No horizontal padding here, so the gap is the ONLY separation between
+     labels — it has to do the work that padding+gap does at desktop (12+16+12
+     = 40px between words). Worst case (Structure) measures ~296px inside a
+     343px box at 375w, so there's room for it. */
+  .sys-subtabs-inner {
+    gap: var(--space-6);
+  }
+
+  .sys-subtab {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
