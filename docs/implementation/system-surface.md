@@ -39,7 +39,7 @@ A fixed header carries the main tabs — **System** + three groups (Work · Stru
 | Page | Renders from |
 |------|--------------|
 | Overview | counts from every list + the Glossary + `ROADMAP.md` Where We Are + doc freshness |
-| Active board(s) | `docs/phases/*.md` (templates excluded) — the board in full under a mode badge + progress (derived from each `## Workstream` section's Status-cell task rows + legacy checkboxes) |
+| Active board(s) | `docs/phases/*.md` (templates excluded) — the board in full under a mode badge + progress. Heavy boards derive it from each `## Workstream` section's Status-cell task rows + legacy checkboxes; light boards (no workstreams) count their `## Items` checkboxes directly, excluding the closing checklist |
 | Roadmap | `ROADMAP.md` (Where We Are, the queue table — any mode, horizon) + `planning/queued/*.md` seeds (`getQueuedSeeds` — frontmatter + lede feed the cards, `mode:` badges each; the whole card links to its seed; the invariant is bidirectional and mode-agnostic — an orphaned seed or a seedless row trips the drift banner) |
 | Questions | `planning/Open Questions & Assumptions Log.md` (`## N. Topic` → `### Question?` with Area/Opened/Priority/Thinking/Resolves-when; everything in the file is open — resolved is deleted) |
 | Punch list | `planning/punch-list.md` (the `P##` table) |

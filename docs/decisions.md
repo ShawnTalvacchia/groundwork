@@ -28,6 +28,12 @@ How this fits the pipeline: walkthrough docs capture decisions during a phase (a
      (the '## YYYY-MM-DD · Title' headings and bold What/Why/Where fields) breaks that page silently - the /system drift banner will name it.
      Check /system after editing. Spec: docs/implementation/system-surface.md -->
 
+## 2026-07-20 · Light boards report real progress
+
+**What:** `getActiveBoards` now counts a light board's `## Items` checkboxes toward its done/total when it has no `## Workstream` sections, so system/side/kickoff boards show real progress (e.g. Kickoff "0/6") instead of "0/0". The closing checklist (`## Close…`) is excluded.
+**Why:** Only heavy (product) boards had workstreams, so every light board read "0/0 tasks" even with a full item list — misleading on the Work surface. Excluding the closing checklist mirrors heavy boards, whose Closing Checklist doesn't count toward build progress, so "progress" always means the work, not the close ritual.
+**Where:** `lib/system.ts` (`getActiveBoards`); spec updated in `implementation/system-surface.md` (Active board row).
+
 ## 2026-07-20 · The kickoff is the bootstrap, not a fourth mode
 
 **What:** Recognized the kickoff as a one-time **bootstrap** that runs before the three-mode loop — documented in prose (`CONTRIBUTING.md → The Kickoff` + a Glossary term), shipped as a pre-opened `phases/kickoff.md` board (`mode: system`, flagged bootstrap) carrying the fill-out-the-project checklist. **Not** encoded as a fourth mode.

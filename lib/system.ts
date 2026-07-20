@@ -669,9 +669,13 @@ export function getDecisions(): Decision[] {
 }
 
 /* ── Active phase (docs/phases/*.md, templates excluded) ─────────────
-   No board = between phases. Boards use `## Workstream X — name` sections
-   whose tasks are either Status-column table rows (the template's style) or
-   legacy `- [ ]`/`- [x]` checkboxes. countWorkstreamTasks reads both. */
+   No board = between phases. Heavy (product) boards use `## Workstream X —
+   name` sections whose tasks are either Status-column table rows (the
+   template's style) or legacy `- [ ]`/`- [x]` checkboxes; countWorkstreamTasks
+   reads both. Light (system/side/kickoff) boards have no workstreams — their
+   `## Items` checkboxes are counted directly, excluding the closing checklist
+   (the same way a product board's Closing Checklist doesn't count toward
+   build progress). Either way a board reports honest done/total. */
 
 // Status-cell vocabulary in workstream task tables (| Task | … | Status |).
 // `done` counts complete; open work counts toward the total; out-of-scope
@@ -765,6 +769,21 @@ export function getActiveBoards(): ActivePhase[] {
       const { done, total } = countWorkstreamTasks(section);
       workstreams.push({ title: header, done, total });
     }
+    let done = workstreams.reduce((n, w) => n + w.done, 0);
+    let total = workstreams.reduce((n, w) => n + w.total, 0);
+    // Light board (no workstreams): count its `## Items` checkboxes directly,
+    // skipping the closing checklist (`## Close…`) so progress reflects the
+    // work, not the close ritual — mirrors heavy boards, whose Closing
+    // Checklist doesn't count either.
+    if (workstreams.length === 0) {
+      for (const section of parsed.body.split(/^## /m).slice(1)) {
+        const header = section.slice(0, section.indexOf("\n")).trim();
+        if (/^clos/i.test(header)) continue;
+        const c = countWorkstreamTasks(section);
+        done += c.done;
+        total += c.total;
+      }
+    }
     const slug = file.replace(/\.md$/, "");
     const mode: BoardMode = resolveMode(parsed.fm.mode);
     boards.push({
@@ -772,8 +791,8 @@ export function getActiveBoards(): ActivePhase[] {
       title: stripMd(firstHeading(parsed.body) ?? slug),
       mode,
       workstreams,
-      done: workstreams.reduce((n, w) => n + w.done, 0),
-      total: workstreams.reduce((n, w) => n + w.total, 0),
+      done,
+      total,
       hasWalkthrough: fs.existsSync(path.join(dir, `${slug}-walkthrough.md`)),
       body: parsed.body,
     });
