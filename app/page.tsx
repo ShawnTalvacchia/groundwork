@@ -9,9 +9,12 @@ export default function Home() {
   return (
     <main className="mx-auto flex min-h-screen max-w-page flex-col justify-center gap-xl px-xl py-3xl">
       <div className="flex flex-col gap-md">
-        <p className="text-2xs font-semibold uppercase tracking-wide text-fg-tertiary">
-          Project OS template
-        </p>
+        <div className="flex items-center justify-between gap-md">
+          <p className="text-2xs font-semibold uppercase tracking-wide text-fg-tertiary">
+            Project OS template
+          </p>
+          <ThemeToggle />
+        </div>
         <h1 className="text-4xl font-bold text-fg-primary">System Template</h1>
         <p className="max-w-prose text-base text-fg-secondary">
           A methodology template with a{" "}
@@ -28,7 +31,6 @@ export default function Home() {
         >
           Open the /system dashboard →
         </Link>
-        <ThemeToggle />
       </div>
       <p className="max-w-prose text-xs text-fg-tertiary">
         New here? Read <code className="sys-code">KICKOFF.md</code> — it walks the first session:
