@@ -28,6 +28,12 @@ How this fits the pipeline: walkthrough docs capture decisions during a phase (a
      (the '## YYYY-MM-DD · Title' headings and bold What/Why/Where fields) breaks that page silently - the /system drift banner will name it.
      Check /system after editing. Spec: docs/implementation/system-surface.md -->
 
+## 2026-07-20 · The kickoff is the bootstrap, not a fourth mode
+
+**What:** Recognized the kickoff as a one-time **bootstrap** that runs before the three-mode loop — documented in prose (`CONTRIBUTING.md → The Kickoff` + a Glossary term), shipped as a pre-opened `phases/kickoff.md` board (`mode: system`, flagged bootstrap) carrying the fill-out-the-project checklist. **Not** encoded as a fourth mode.
+**Why:** The kickoff breaks the two traits every mode shares — it runs once (modes recur) and it *writes* the strategy shelf instead of orienting against it (there's nothing to read yet). It also opens all ground (system + product), the one exception to the touch bands, because it's *creating* the ground the bands protect. A real fourth mode was rejected: it permanently enlarges the model (parser + `modes===3` invariant + badges) for a once-per-project event, violating "leave the rule-set the same size or smaller." Splitting into system+product phases was rejected too: you can't run a product phase to serve a vision you're authoring (chicken-and-egg). Shipping the board pre-opened (vs a queued row) matches "urgent work opens a board directly" and gives the adopter immediate direction on first boot.
+**Where:** `docs/CONTRIBUTING.md` (The Kickoff section + Glossary), `docs/phases/kickoff.md` (the shipped board), `CLAUDE.md` (touch-band exception), `KICKOFF.md` (First run reframed to the shipped-open board). No parser or invariant changes — `getWorkModel` still parses exactly three modes.
+
 ## 2026-07-20 · Layer B: the `/system` dashboard, ported into the template
 
 **What:** Ported Doggo's derived-never-authored `/system` dashboard (the doc parsers, the Next.js pages, the styleguide) into the template so it renders live from the Layer-A docs, and **recalibrated the drift invariants to presence-not-count** so a fresh project boots with zero alarms.

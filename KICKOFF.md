@@ -19,6 +19,7 @@ docs/
     Future Considerations.md  empty
     queued/_seed-template.md   one seed per queued phase
   phases/
+    kickoff.md                the bootstrap board — ships OPEN; work it first, then delete
     _product-template.md      the four board molds
     _system-template.md
     _side-template.md
@@ -30,9 +31,9 @@ app/globals.css                the starter design system (edit these tokens to r
 package.json, *.config.*       the web host (Next.js, Tailwind v4)
 ```
 
-## First run — a guided kickoff (open it as a **system phase**)
+## First run — the kickoff phase (ships already open)
 
-The kickoff is itself a phase. Open a **system** board (`_system-template.md`) — friction: "the strategy shelf is empty; fill it and queue the first work." Then:
+The kickoff is the **bootstrap** — the one-time phase that runs *before* the three-mode loop (`docs/CONTRIBUTING.md → The Kickoff`). It ships **already open** as `docs/phases/kickoff.md`, so you don't open it — you work it, and it shows up as the active board on `/system`. It's a guided conversation: answer the prompts, and the system explains its options as you go. The board is the checklist; the steps below are the how and why. Then:
 
 1. **Answer the seeded Open Questions** (`planning/Open Questions & Assumptions Log.md`). They're the fresh-project prompts: who's the user, what's out of scope, the smallest thesis-proving thing, the riskiest assumption. Each answer becomes a decision, a strategy-doc edit, or a queued phase — then delete the question.
 2. **Fill `strategy/Vision.md`** (bedrock) and **`Scope & Constraints.md`**. Flip both `status: draft → active` and set their `summary:`. Delete the prompt blocks as you answer them.

@@ -111,6 +111,24 @@ Rules for humans and agents working in this repo. Read before building. This is 
 
 ---
 
+## The Kickoff — the bootstrap before the loop
+
+<!-- Prose only — NOT parsed by lib/system.ts (deliberately not a fourth mode; getWorkModel still parses exactly the three '### Mode N' headings above). The kickoff is the one-time ignition, not part of the recurring cycle. -->
+
+The three modes govern the **recurring** work cycle. The **kickoff is the ignition that runs once, before the cycle begins** — the bootstrap that turns an empty template into a project. It is deliberately *not* a fourth mode, because it breaks the two traits every mode shares:
+
+- **Modes recur; the kickoff happens exactly once, ever.**
+- **Modes orient against the existing shelf; the kickoff has nothing to read — its job is to *write* the shelf** every later phase will align to (or challenge).
+
+Two more things make it an outlier, and they're features:
+
+- **It's interview-shaped.** It pulls the project out of the user — the seeded Open Questions are its prompts — and explains the system + its options as it goes, rather than building from a brief.
+- **All ground is open — the one exception to the touch bands.** It makes both system choices (stack, CLAUDE.md, ROADMAP structure) *and* product choices (Vision, Scope, the first thesis), because it's *creating* the ground the bands later protect. You can't gate strategy content from a phase whose whole job is to author it, and you can't run a product phase to serve a vision that doesn't exist yet — the chicken-and-egg is exactly why the kickoff sits outside the three modes.
+
+**How it ships and runs:** the template ships with the kickoff board **already open** at `phases/kickoff.md` (it's never re-run, so there's no template mold). Its board carries `mode: system` for the badge — it's meta-setup, done with the user — flagged as the bootstrap. Work it as a guided conversation; the step-by-step lives in the root `KICKOFF.md` (one home, many references — the board points there). At close it is **distilled + deleted** like any board, and the three-mode loop begins: from here on, every phase runs in one of the three modes and the touch bands apply as written.
+
+---
+
 ## Glossary
 
 <!-- PARSED by lib/system.ts (getGlossary) -> /system/glossary + the hub. Changing this section's SHAPE
@@ -122,6 +140,7 @@ The system's terms, defined once. Used consistently everywhere — docs, boards,
 - **Phase** — the work unit: any chunk of work run through the rituals, in exactly one mode. Opens as a board, closes by distill + delete.
 - **Session** — one chat. One phase per session is the strong default, not a law: a phase survives a force-ended chat, and a fresh session picking its board back up is continuation, not error-recovery.
 - **Mode** — a phase's flavor: Product (building the product), System (tending the system itself), or Side (working the trackers). The mode sets the ritual's weight and focus, the board's template, the orient set, and the touch bands.
+- **Kickoff** — the one-time bootstrap that runs before the three-mode loop: it writes the strategy shelf (rather than orienting against it) and opens all ground because it's creating everything. Not a fourth mode — the ignition. See "The Kickoff" above.
 - **Board** — a phase's worklist and running record while open, in `phases/`, created from its mode's template. Scale varies by mode: product boards are heavy (workstreams + a walkthrough sibling); side boards are light (the tracker items pulled in); system boards fit the friction. Always `tier: working` while open; distilled and deleted at close — product phases leave a compact record.
 - **Seed** — a queued phase's accumulation space, one file in `planning/queued/` for any mode: a pitch, dated notes, candidate scope, refs — never tasks. Folds into the board at phase open and is deleted.
 - **Queue** — the ROADMAP's What's Next: upcoming planned work of any mode, one mode-tagged list, every row carrying a seed. A staging area, never a gate — urgent work opens a board directly.
