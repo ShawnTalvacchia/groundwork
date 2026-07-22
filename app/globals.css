@@ -719,10 +719,23 @@ body {
   box-shadow: var(--shadow-xs);
 }
 /* Compact segmented control — a smaller TabBar for inline selectors (the
-   theme picker). Height matches a pill badge. */
+   theme picker). Ghost fill + tighter radius so it reads as a settings
+   control, not a smaller copy of the main nav tabs. Active state borrows
+   the .pill.active pattern: a neutral border + primary text, no fill. */
+.tab-bar--compact {
+  background: transparent;
+  border-radius: var(--radius-sm);
+}
 .tab-bar--compact .tab-main {
   height: 30px;
   padding: 0 var(--space-md);
+  border-radius: var(--radius-xs);
+  border: 1px solid transparent;
+}
+.tab-bar--compact .tab-main[data-active] {
+  background: none;
+  box-shadow: none;
+  border-color: var(--border-strongest);
 }
 /* Tab badge — small brand-filled count next to a tab label. */
 .tab-badge {
