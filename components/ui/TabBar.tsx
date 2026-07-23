@@ -13,8 +13,7 @@ interface TabBarProps {
   tabs: Tab[];
   activeKey: string;
   onChange: (key: string) => void;
-  /** Extra class on the container — e.g. `tab-bar--compact` for the smaller
-   *  segmented control used as a settings selector (the theme picker). */
+  /** Extra class on the container — e.g. `sys-tab-fill` to stretch the bar. */
   className?: string;
 }
 

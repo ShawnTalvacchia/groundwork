@@ -718,24 +718,41 @@ body {
   background: var(--surface-top);
   box-shadow: var(--shadow-xs);
 }
-/* Compact segmented control — a smaller TabBar for inline selectors (the
-   theme picker). Ghost fill + tighter radius so it reads as a settings
-   control, not a smaller copy of the main nav tabs. Active state borrows
-   the .pill.active pattern: a neutral border + primary text, no fill. */
-.tab-bar--compact {
-  background: transparent;
-  border-radius: var(--radius-sm);
-}
-.tab-bar--compact .tab-main {
-  height: 30px;
-  padding: 0 var(--space-md);
+/* Theme toggle — the Light/Dark/System icon triad (components/ui/ThemeToggle).
+   Deliberately not a TabBar variant: glyphs in a short, square-cornered track
+   read as a settings control, where a row of text labels only ever read as a
+   smaller copy of the nav. */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  background: var(--surface-inset);
   border-radius: var(--radius-xs);
-  border: 1px solid transparent;
 }
-.tab-bar--compact .tab-main[data-active] {
+.theme-toggle-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: var(--radius-xxs);
   background: none;
-  box-shadow: none;
-  border-color: var(--border-strongest);
+  color: var(--text-gray);
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.theme-toggle-option:hover {
+  color: var(--text-primary);
+}
+.theme-toggle-option[data-active] {
+  background: var(--surface-top);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-xs);
 }
 /* Tab badge — small brand-filled count next to a tab label. */
 .tab-badge {

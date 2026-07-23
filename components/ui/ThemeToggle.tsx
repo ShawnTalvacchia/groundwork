@@ -9,13 +9,15 @@
  * `data-theme` to <html> (see `lib/theme.ts`); the pre-paint script in
  * `app/layout.tsx` mirrors the resolution to avoid a flash.
  *
- * Rendered as a compact segmented control (`TabBar` + `tab-bar--compact`) —
- * one bar, three segments — rather than separate pills. Re-syncs across
- * instances via the `theme-changed` event.
+ * Deliberately NOT a `TabBar`: an icon triad reads as a settings control
+ * rather than navigation, which a row of text labels in a track never did —
+ * it just looked like the /system nav at a smaller size. Labels survive as
+ * `title` + `aria-label`. Re-syncs across instances via the `theme-changed`
+ * event.
  */
 
 import { useEffect, useState } from "react";
-import { TabBar } from "@/components/ui/TabBar";
+import { Sun, Moon, Monitor } from "@phosphor-icons/react";
 import {
   readThemePref,
   applyThemePref,
@@ -23,10 +25,10 @@ import {
   type ThemePref,
 } from "@/lib/theme";
 
-const OPTIONS = [
-  { key: "light", label: "Light" },
-  { key: "dark", label: "Dark" },
-  { key: "system", label: "System" },
+const OPTIONS: { key: ThemePref; label: string; Icon: typeof Sun }[] = [
+  { key: "light", label: "Light", Icon: Sun },
+  { key: "dark", label: "Dark", Icon: Moon },
+  { key: "system", label: "System", Icon: Monitor },
 ];
 
 export function ThemeToggle({ className }: { className?: string }) {
@@ -40,18 +42,33 @@ export function ThemeToggle({ className }: { className?: string }) {
     return () => window.removeEventListener(THEME_CHANGED_EVENT, read);
   }, []);
 
-  const choose = (key: string) => {
-    const p = key as ThemePref;
-    applyThemePref(p);
-    setPref(p);
-  };
-
   return (
-    <TabBar
-      tabs={OPTIONS}
-      activeKey={pref}
-      onChange={choose}
-      className={`tab-bar--compact${className ? ` ${className}` : ""}`}
-    />
+    <div
+      role="radiogroup"
+      aria-label="Appearance"
+      className={`theme-toggle${className ? ` ${className}` : ""}`}
+    >
+      {OPTIONS.map(({ key, label, Icon }) => {
+        const active = key === pref;
+        return (
+          <button
+            key={key}
+            type="button"
+            role="radio"
+            aria-checked={active}
+            aria-label={label}
+            title={label}
+            onClick={() => {
+              applyThemePref(key);
+              setPref(key);
+            }}
+            className="theme-toggle-option"
+            data-active={active || undefined}
+          >
+            <Icon size={16} weight={active ? "fill" : "regular"} aria-hidden />
+          </button>
+        );
+      })}
+    </div>
   );
 }
