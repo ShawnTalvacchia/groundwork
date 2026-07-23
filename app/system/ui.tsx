@@ -17,7 +17,7 @@ export function DriftBanner({ alarms }: { alarms: DriftAlarm[] }) {
         Derivation drift — {alarms.length} parser invariant{alarms.length === 1 ? "" : "s"} failing
       </p>
       <p className="text-xs text-fg-secondary max-w-[72ch]">
-        A parsed doc's format no longer matches what its parser expects, so a page below is rendering
+        A parsed doc&apos;s format no longer matches what its parser expects, so a page below is rendering
         empty or partial. Fix the doc to spec — formats never bend to the parsers. See{" "}
         <Link href="/system/docs/implementation/system-surface.md" className="underline underline-offset-2">
           system-surface.md → Drift alarms
