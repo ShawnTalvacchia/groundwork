@@ -38,7 +38,7 @@ function Cluster({
         </Link>
         <p className="text-sm text-fg-tertiary">{purpose}</p>
       </div>
-      <div className="sys-tile-grid">{children}</div>
+      {children}
     </section>
   );
 }
@@ -74,40 +74,41 @@ export default function SystemOverview() {
         icon={<Hammer size={20} weight="light" />}
         purpose="What's moving — the active board and the queues that feed it."
       >
-        {boards.length === 0 ? (
-          <Link href="/system/phase" className="sys-tile sys-tile-wide">
-            <span className="text-2xs font-semibold uppercase tracking-wide text-fg-tertiary">
-              Active board
-            </span>
-            <span className="flex items-baseline gap-md">
-              <span className="text-2xl font-semibold text-fg-primary">Between boards</span>
-              <span className="text-xs text-fg-tertiary">{roadmap.phases.length} phases queued</span>
-            </span>
-          </Link>
-        ) : (
-          boards.map((b) => (
-            <Link key={b.slug} href="/system/phase" className="sys-tile sys-tile-wide">
-              <span className="text-2xs font-semibold uppercase tracking-wide text-fg-tertiary">
-                Active board · {modes.find((m) => m.key === b.mode)?.label ?? b.mode}
-              </span>
-              <span className="flex items-baseline gap-md">
-                <span className="text-2xl font-semibold text-fg-primary">{b.title.split(" — ")[0]}</span>
-                <span className="text-xs text-fg-tertiary tabular-nums">
-                  {b.done}/{b.total} tasks
-                </span>
-              </span>
-            </Link>
-          ))
-        )}
-        <Tile href="/system/roadmap" label="Roadmap" value={roadmap.phases.length} detail="phases queued" />
-        <Tile
-          href="/system/questions"
-          label="Open questions"
-          value={openItems}
-          detail={`across ${questions.length} topics (§)`}
-        />
-        <Tile href="/system/punch-list" label="Punch list" value={punch.length} detail="small fixes waiting" />
-        <Tile href="/system/future" label="Future" value={future.length} detail="parked until a trigger fires" />
+        {/* Hero row: the active board and the roadmap are peers here — wide
+            enough that a long board title truncates before wrapping. */}
+        <div className="grid gap-md sm:grid-cols-2">
+          {boards.length === 0 ? (
+            <Tile
+              href="/system/phase"
+              label="Active board"
+              value="Between boards"
+              detail={`${roadmap.phases.length} phases queued`}
+            />
+          ) : (
+            boards.map((b) => (
+              <Tile
+                key={b.slug}
+                href="/system/phase"
+                label={`Active board · ${modes.find((m) => m.key === b.mode)?.label ?? b.mode}`}
+                value={b.title.split(" — ")[0]}
+                detail={`${b.done}/${b.total} tasks`}
+              />
+            ))
+          )}
+          <Tile href="/system/roadmap" label="Roadmap" value={roadmap.phases.length} detail="phases queued" />
+        </div>
+        {/* The trackers — three peers, fill the row rather than auto-fill and
+            leave a gap. */}
+        <div className="grid gap-md sm:grid-cols-3">
+          <Tile
+            href="/system/questions"
+            label="Open questions"
+            value={openItems}
+            detail={`across ${questions.length} topics (§)`}
+          />
+          <Tile href="/system/punch-list" label="Punch list" value={punch.length} detail="small fixes waiting" />
+          <Tile href="/system/future" label="Future" value={future.length} detail="parked until a trigger fires" />
+        </div>
       </Cluster>
 
       <Cluster
@@ -116,26 +117,32 @@ export default function SystemOverview() {
         icon={<TreeStructure size={20} weight="light" />}
         purpose="What the project is made of — features, strategy, the docs, the shipped record."
       >
-        <Tile
-          href="/system/features"
-          label="Features"
-          value={features.length}
-          detail={`${features.filter((d) => d.featureKind !== "demo").length} product · ${features.filter((d) => d.featureKind === "demo").length} demo layer`}
-        />
-        <Tile
-          href="/system/strategy"
-          label="Strategy"
-          value={strategyDocs.length}
-          detail="models · drafts · kits · research"
-        />
-        <Tile href="/system/docs" label="Docs" value={docs.length} detail={tierCounts} />
-        <Tile href="/system/timeline" label="Timeline" value={archived.length} detail="closed phases on record" />
-        <Tile
-          href="/system/decisions"
-          label="Decisions"
-          value={decisions.length}
-          detail={`logged · latest ${decisions[0]?.date ?? "—"}`}
-        />
+        {/* What it's made of — current state. */}
+        <div className="grid gap-md sm:grid-cols-3">
+          <Tile
+            href="/system/features"
+            label="Features"
+            value={features.length}
+            detail={`${features.filter((d) => d.featureKind !== "demo").length} product · ${features.filter((d) => d.featureKind === "demo").length} demo layer`}
+          />
+          <Tile
+            href="/system/strategy"
+            label="Strategy"
+            value={strategyDocs.length}
+            detail="models · drafts · kits · research"
+          />
+          <Tile href="/system/docs" label="Docs" value={docs.length} detail={tierCounts} />
+        </div>
+        {/* The shipped record — history. */}
+        <div className="grid gap-md sm:grid-cols-2">
+          <Tile href="/system/timeline" label="Timeline" value={archived.length} detail="closed phases on record" />
+          <Tile
+            href="/system/decisions"
+            label="Decisions"
+            value={decisions.length}
+            detail={`logged · latest ${decisions[0]?.date ?? "—"}`}
+          />
+        </div>
       </Cluster>
 
       <Cluster
@@ -144,10 +151,12 @@ export default function SystemOverview() {
         icon={<BookOpenText size={20} weight="light" />}
         purpose="How we work — the modes and rituals every phase runs by."
       >
-        <Tile href="/system/method" label="How we work" value={modes.length} detail="modes · each with its rituals" />
-        <Tile href="/system/trackers" label="Trackers" value={trackers.length} detail="lists that feed the boards" />
-        <Tile href="/system/tiers" label="Tiers" value={4} detail="review cadences · sinking · challenge" />
-        <Tile href="/system/glossary" label="Glossary" value={glossary.length} detail="terms, defined once" />
+        <div className="sys-tile-grid">
+          <Tile href="/system/method" label="How we work" value={modes.length} detail="modes · each with its rituals" />
+          <Tile href="/system/trackers" label="Trackers" value={trackers.length} detail="lists that feed the boards" />
+          <Tile href="/system/tiers" label="Tiers" value={4} detail="review cadences · sinking · challenge" />
+          <Tile href="/system/glossary" label="Glossary" value={glossary.length} detail="terms, defined once" />
+        </div>
       </Cluster>
 
     </>

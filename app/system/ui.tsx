@@ -63,7 +63,12 @@ export function Tile({
   return (
     <Link href={href} className="sys-tile">
       <span className="text-2xs font-semibold uppercase tracking-wide text-fg-tertiary">{label}</span>
-      <span className={`${valueSize} font-semibold text-fg-primary leading-tight`}>{value}</span>
+      <span
+        className={`${valueSize} font-semibold text-fg-primary leading-tight truncate`}
+        title={typeof value === "string" ? value : undefined}
+      >
+        {value}
+      </span>
       {detail && <span className="text-xs text-fg-tertiary leading-snug">{detail}</span>}
     </Link>
   );
