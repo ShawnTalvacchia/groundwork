@@ -39,8 +39,9 @@ import { getComponentInventory, getStyleguide } from "@/lib/styleguide";
 // have items (a question missing its area, an FC missing its trigger, a doc
 // missing its tier), the Work Model / tiers / glossary shape, and the
 // styleguide's own completeness. As the project fills in, the surface stays
-// honest without ever nagging an empty list. (Doggo shipped stricter count
-// floors tuned to a mature repo — see EXTRACTION-MANIFEST §B4.)
+// honest without ever nagging an empty list. A mature repo may want count
+// floors back (e.g. "≥N archived phases"); that's a deliberate re-tightening,
+// logged in decisions.md.
 
 export interface DriftAlarm {
   parser: string; // "getWorkModel"

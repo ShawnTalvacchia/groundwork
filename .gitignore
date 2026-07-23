@@ -30,3 +30,6 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+# agent worktrees (live inside the repo; keep .claude/launch.json tracked)
+.claude/worktrees/

@@ -10,9 +10,11 @@ read-when: "/system surface changes — new page, IA change, doc-format change"
 
 ## What this is
 
-`/system` is the project's knowledge system rendered as a private reference layer inside the app — behind the app-wide unlock gate, noindexed, and absent from the product nav. It exists so the state of the work is legible at a glance while the docs stay the single source of truth.
+`/system` is the project's knowledge system rendered as a reference layer inside the app — noindexed and absent from the product nav. It exists so the state of the work is legible at a glance while the docs stay the single source of truth.
 
 Because the site deploys from pushes, the surface updates with every commit: push → rebuild → the pages re-read `docs/`.
+
+> **⚠ There is no auth gate — add one before deploying publicly.** The template ships `/system` **open**, protected only by `robots: noindex` (`app/system/layout.tsx`), which stops indexing but not access. Every page here renders your strategy shelf, roadmap, open questions, and decisions log. `noindex` is not access control: anyone with the URL can read all of it. Deploying to a public host without adding real auth (middleware, platform password protection, or an access-controlled deployment) publishes the project's entire internal record. A placeholder password isn't shipped on purpose — the adopter picks the mechanism their host and threat model call for.
 
 > **This doc is the spec; the code is in the repo.** The dashboard ships with the template — `lib/system.ts`, `lib/derivation.ts`, `lib/styleguide.ts`, `app/system/*`, and the starter `app/globals.css`. Run it with `npm run dev` and open `/system`. This spec is the contract the parsed docs uphold, and the parser markers in those docs (`<!-- PARSED by … -->`) point back here.
 
@@ -66,4 +68,4 @@ A fixed header carries the main tabs — **System** + three groups (Work · Stru
 
 A firing alarm means the **doc** drifted from spec — fix the doc, or change spec + parser deliberately, never one without the other.
 
-> **Calibration: presence-not-count (see `decisions.md` 2026-07-20).** The invariants are tuned so a fresh project — empty trackers, no archive, no decisions, an empty queue — boots with **zero alarms**. What still fires is real drift: a populated list with a malformed row (a question missing its area, an FC missing its trigger, a doc missing its tier), the Work Model / tiers / glossary shape, the seed↔queued-row bidirectional match, and the styleguide's own completeness (the starter `globals.css` meets its thresholds: ≥200 tokens, the `SEMANTIC TOKENS — Surface` + `Font Size` sections, ≥1 shared component dir). As the project fills in, the surface stays honest without ever nagging an empty list. The count floors Doggo shipped (≥10 archived phases, ≥30 docs, ≥5 decisions) were removed; if a future project wants them back, they're a deliberate re-tightening, logged in `decisions.md`.
+> **Calibration: presence-not-count.** The invariants are tuned so a fresh project — empty trackers, no archive, no decisions, an empty queue — boots with **zero alarms**. What still fires is real drift: a populated list with a malformed row (a question missing its area, an FC missing its trigger, a doc missing its tier), the Work Model / tiers / glossary shape, the seed↔queued-row bidirectional match, and the styleguide's own completeness (the starter `globals.css` meets its thresholds: ≥200 tokens, the `SEMANTIC TOKENS — Surface` + `Font Size` sections, ≥1 shared component dir). As the project fills in, the surface stays honest without ever nagging an empty list. A mature repo may want count floors (e.g. "≥N archived phases, ≥N decisions") — adding them back is a deliberate re-tightening, logged in `decisions.md`.

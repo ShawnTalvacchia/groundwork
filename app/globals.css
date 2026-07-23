@@ -9,6 +9,13 @@
    same commit, so the styleguide can't drift. To change a value, change it
    here.
 
+   RE-SKINNING: token NAMES are load-bearing, token VALUES are yours.
+   The /system pages reference hundreds of Tailwind utilities derived from the
+   names below (text-fg-primary, bg-surface-top, rounded-panel, gap-md…), so
+   renaming or removing a token unstyles the dashboard. Changing what a token
+   RESOLVES TO is free and is exactly how you make the palette your own —
+   re-point the ramps and the semantic layer, keep the names.
+
    Structure (load-bearing — the styleguide parser + drift alarms read it):
      1. @theme          — maps semantic tokens into Tailwind utilities
      2. :root           — primitive ramps, then the semantic layer

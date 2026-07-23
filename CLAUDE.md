@@ -24,7 +24,7 @@ Canonical rules + glossary: `docs/CONTRIBUTING.md` → "The Work Model." Live pi
 
 ## Stack
 
-_(fill at kickoff — framework, language, styling, backend, dev-server command, test/lint/build commands)_
+_(fill at kickoff — framework, language, styling, backend, dev-server command, test/lint/build commands. **Do NOT inherit the template's Next.js stack by default** — it hosts the `/system` dashboard, nothing more. Choose from the project's goals and a FRESH check of current tooling/hosting options and costs; state the reason for the choice in `decisions.md`. See KICKOFF.md step 3.)_
 
 ## Design & Code Conventions
 
