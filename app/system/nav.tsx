@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { PROJECT_NAME } from "@/lib/project";
 import { GROUPS, groupForPath } from "./nav-model";
 
 // Fixed-size header (title + full-width main pills, the app's segmented
@@ -18,10 +19,11 @@ export function SystemNav() {
     <nav className="sys-nav" aria-label="System sections">
       <div className="sys-nav-inner">
         <div className="sys-header">
-          {/* The wordmark is the way out to the app. The System tab is this
-              surface's home. Swap this for your own logo when you have one. */}
-          <Link href="/" className="sys-header-brand" aria-label="Home">
-            <span className="sys-header-logo">◆ System</span>
+          {/* The wordmark is the way out to the app, so it carries the PROJECT's
+              name (lib/project.ts) — not "System", which is already the first
+              main tab below. Swap the ◆ for your own logo when you have one. */}
+          <Link href="/" className="sys-header-brand" aria-label={`${PROJECT_NAME} home`}>
+            <span className="sys-header-logo">◆ {PROJECT_NAME}</span>
           </Link>
           <ThemeToggle />
         </div>

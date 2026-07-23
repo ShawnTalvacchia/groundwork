@@ -40,9 +40,14 @@ The kickoff is the **bootstrap** — the one-time phase that runs *before* the t
 3. **Choose the stack** and fill CLAUDE.md's `## Stack` + `## Design & Code Conventions` blocks (the stack-neutral reuse-first principles already live in CONTRIBUTING).
 
    > **⚠ The template's own stack is NOT a default.** This repo arrives as a Next.js app only because the `/system` dashboard needed a host to be built in. That is a decision about the *dashboard*, not about *your product*. Choose the product's stack from the project's goals, the team's abilities, and **current** tooling and hosting costs — capabilities and prices change fast, so do a fresh check (web search) rather than relying on the assistant's training-data priors or on what this template happens to ship with. If the right product stack isn't Next.js, that's fine: the dashboard can live beside it as its own small app, or the product can live in its own directory or repo. Adopting Next.js *because it was already here* is the failure mode this note exists to prevent — if it IS the right choice, the kickoff should be able to say why in one sentence that isn't "it came with the template."
-4. **Set the ROADMAP** — the Goal line, Where We Are, and queue your **first product phase** with a one-line thesis + a seed in `planning/queued/`.
-5. **Log the kickoff decisions** in `decisions.md` (the stack choice, the vision as first drafted).
-6. **Close the system phase** with the verification handoff (present the filled shelf for a read), then open your first product phase from the roadmap.
+4. **Make it yours** (web projects). Two edits, both one-and-done:
+   - **Name it** — set `PROJECT_NAME` + `PROJECT_DESCRIPTION` in `lib/project.ts`. That one edit renames the browser tab, the `/system` header wordmark, and the generated link-preview image. The header carries the *project's* name on purpose: "System" is already the first tab, so a wordmark saying "System" is a label repeated, not a place named.
+   - **Re-skin** — edit the tokens in `app/globals.css`; the styleguide re-derives on the next build. Token *names* are load-bearing (the dashboard's utilities come from them); token *values* are yours.
+
+   The starter favicon (`app/icon.svg`) and link preview (`app/opengraph-image.tsx`) pick up the new name automatically — they're generic, not broken, so replacing them with real artwork is punch-list work, not kickoff work.
+5. **Set the ROADMAP** — the Goal line, Where We Are, and queue your **first product phase** with a one-line thesis + a seed in `planning/queued/`.
+6. **Log the kickoff decisions** in `decisions.md` (the stack choice, the vision as first drafted).
+7. **Close the system phase** with the verification handoff (present the filled shelf for a read), then open your first product phase from the roadmap.
 
 After that, work the normal loop: queue → open a phase from its mode's template → orient (align or challenge) → build → (product) walkthrough → close (distill + delete). The whole loop is in `docs/CONTRIBUTING.md`.
 

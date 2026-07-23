@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeWatcher } from "@/components/ui/ThemeWatcher";
+import { PROJECT_NAME, PROJECT_DESCRIPTION } from "@/lib/project";
 
 /**
  * Set data-theme before first paint (no flash). Resolves the stored theme
@@ -11,9 +12,10 @@ import { ThemeWatcher } from "@/components/ui/ThemeWatcher";
  */
 const THEME_INIT = `(function(){try{var p=localStorage.getItem('theme-pref');if(p!=='dark'&&p!=='light'&&p!=='system'){p='light';}var t=p==='system'?(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):p;document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','light');}})();`;
 
+// Name + description come from lib/project.ts — set them once at kickoff.
 export const metadata: Metadata = {
-  title: "System Template",
-  description: "A project-operating-system template with a derived /system dashboard.",
+  title: PROJECT_NAME,
+  description: PROJECT_DESCRIPTION,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
