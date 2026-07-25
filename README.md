@@ -6,7 +6,12 @@ It gives a project three things: a work model (phases, modes, rituals), a small 
 
 **The one rule: derived, never authored.** The docs are the truth. The dashboard renders them. Finished work leaves the working set instead of piling up. Keep that rule and the project stays legible at any size.
 
-<!-- TODO: screenshot of a filled /system overview -->
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset=".github/system-overview-dark.png">
+  <img alt="The /system overview of a filled project: an active board mid-phase, the queue, trackers, decisions, and the shipped record, all rendered from docs/" src=".github/system-overview-light.png">
+</picture>
+
+*The dashboard of a project in flight. (Staged demo content: "Frond," a fictional plant-care app.)*
 
 ## How it works
 
