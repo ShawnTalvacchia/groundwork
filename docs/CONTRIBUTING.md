@@ -137,6 +137,7 @@ Two more things make it an outlier, and they're features:
 
 The system's terms, defined once. Used consistently everywhere — docs, boards, the `/system` surface (which renders these definitions from this section).
 
+- **PO** — the product owner: the human the work is done with and for. Every close ritual hands off to the PO; walkthroughs are driven by the PO. In a solo project, that's you wearing the reviewer hat.
 - **Phase** — the work unit: any chunk of work run through the rituals, in exactly one mode. Opens as a board, closes by distill + delete.
 - **Session** — one chat. One phase per session is the strong default, not a law: a phase survives a force-ended chat, and a fresh session picking its board back up is continuation, not error-recovery.
 - **Mode** — a phase's flavor: Product (building the product), System (tending the system itself), or Side (working the trackers). The mode sets the ritual's weight and focus, the board's template, the orient set, and the touch bands.

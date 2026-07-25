@@ -1,11 +1,15 @@
 import Link from "next/link";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { getActiveBoards } from "@/lib/system";
 
 // The template ships with no product yet — the root page is a thin front door
 // to the /system dashboard (the derived knowledge surface). Replace this with
 // your app's real landing page once the first product phase ships.
 
 export default function Home() {
+  // Derived, like the /system welcome band: this line exists only while the
+  // kickoff board does, so it can never go stale after the bootstrap closes.
+  const kickoffOpen = getActiveBoards().some((b) => b.slug === "kickoff");
   return (
     <main className="mx-auto flex min-h-screen max-w-page flex-col justify-center gap-xl px-xl py-3xl">
       <div className="flex flex-col gap-md">
@@ -32,10 +36,12 @@ export default function Home() {
           Open the /system dashboard →
         </Link>
       </div>
-      <p className="max-w-prose text-xs text-fg-tertiary">
-        New here? Read <code className="sys-code">KICKOFF.md</code> — it walks the first session:
-        open a system phase, fill the strategy shelf, then queue the first product phase.
-      </p>
+      {kickoffOpen && (
+        <p className="max-w-prose text-xs text-fg-tertiary">
+          New here? The kickoff board ships already open. <code className="sys-code">KICKOFF.md</code>{" "}
+          walks it: fill the strategy shelf, choose the stack, queue the first product phase.
+        </p>
+      )}
     </main>
   );
 }

@@ -61,8 +61,24 @@ export default function SystemOverview() {
   const strategyDocs = docs.filter((d) => d.dir === "strategy");
   const tierCounts = TIER_ORDER.map((t) => `${docs.filter((d) => d.tier === t).length} ${t}`).join(" · ");
 
+  // The welcome band is DERIVED: it renders from the kickoff board's
+  // existence and vanishes forever when that board is distilled + deleted.
+  // No checklist item removes it; the system's own law does.
+  const kickoffOpen = boards.some((b) => b.slug === "kickoff");
+
   return (
     <>
+      {kickoffOpen && (
+        <div className="flex flex-col gap-xs rounded-panel border border-brand-light bg-brand-subtle px-lg py-md">
+          <p className="text-sm font-semibold text-fg-primary">◆ Fresh template: not yet kicked off.</p>
+          <p className="text-xs text-fg-secondary max-w-[72ch]">
+            The Kickoff board below is the one-time bootstrap. Your guide is{" "}
+            <code className="sys-code">KICKOFF.md</code> at the repo root. This banner derives from
+            that board&apos;s existence and disappears when the kickoff closes.
+          </p>
+        </div>
+      )}
+
       <p className="text-sm text-fg-secondary max-w-[64ch]">
         The work, the strategy, and the rules — rendered from <code className="sys-code">docs/</code>{" "}
         on every commit.
