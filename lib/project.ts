@@ -13,9 +13,12 @@
  * nothing else hard-codes the name.
  */
 
-/** Display name. Any casing/punctuation — it's rendered verbatim. */
-export const PROJECT_NAME = "System Template";
+/** Display name. Any casing/punctuation — it's rendered verbatim.
+ *  Deliberately a placeholder, NOT "Groundwork": this value belongs to the
+ *  project built from the template, and the kickoff's first job is to
+ *  overwrite it. A value that looks unfinished is the point. */
+export const PROJECT_NAME = "Your Project";
 
 /** One line, used as the metadata description and on the link preview. */
 export const PROJECT_DESCRIPTION =
-  "A project-operating-system template with a derived /system dashboard.";
+  "Built with Groundwork — a work model, a doc shelf, and a dashboard derived from them.";

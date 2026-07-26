@@ -50,7 +50,7 @@ The kickoff is the **bootstrap** — the one-time phase that runs *before* the t
    >
    > The test: the kickoff can say why the stack is right in one sentence that isn't "it came with the template."
 4. **Make it yours** (web projects). Two edits, both one-and-done:
-   - **Name it** — set `PROJECT_NAME` + `PROJECT_DESCRIPTION` in `lib/project.ts`. That one edit renames the browser tab, the `/system` header wordmark, and the generated link-preview image. The header carries the *project's* name on purpose: "System" is already the first tab, so a wordmark saying "System" is a label repeated, not a place named.
+   - **Name it** — set `PROJECT_NAME` + `PROJECT_DESCRIPTION` in `lib/project.ts` (they ship as obvious placeholders). That one edit renames the browser tab, the `/system` header wordmark, the front door at `/`, and the generated link-preview image. The header carries the *project's* name on purpose: "System" is already the first tab, so a wordmark saying "System" is a label repeated, not a place named.
    - **Re-skin** — edit the tokens in `app/globals.css`; the styleguide re-derives on the next build. Token *names* are load-bearing (the dashboard's utilities come from them); token *values* are yours.
 
    The starter favicon (`app/icon.svg`) and link preview (`app/opengraph-image.tsx`) pick up the new name automatically — they're generic, not broken, so replacing them with real artwork is punch-list work, not kickoff work.

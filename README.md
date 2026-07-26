@@ -1,4 +1,4 @@
-# System Template
+# Groundwork
 
 A project operating system you copy, not a starter app.
 

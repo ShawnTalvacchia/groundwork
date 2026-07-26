@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { getActiveBoards } from "@/lib/system";
+import { PROJECT_NAME, PROJECT_DESCRIPTION } from "@/lib/project";
 
 // The template ships with no product yet — the root page is a thin front door
 // to the /system dashboard (the derived knowledge surface). Replace this with
@@ -15,18 +16,14 @@ export default function Home() {
       <div className="flex flex-col gap-md">
         <div className="flex items-center justify-between gap-md">
           <p className="text-2xs font-semibold uppercase tracking-wide text-fg-tertiary">
-            Project OS template
+            Built with Groundwork
           </p>
           <ThemeToggle />
         </div>
-        <h1 className="text-4xl font-bold text-fg-primary">System Template</h1>
-        <p className="max-w-prose text-base text-fg-secondary">
-          A methodology template with a{" "}
-          <span className="font-semibold text-fg-primary">derived, never-authored</span> knowledge
-          dashboard. Everything on the dashboard renders from the markdown in{" "}
-          <code className="sys-code">docs/</code> at build time — to change a page, change its source
-          doc.
-        </p>
+        {/* Name + line come from lib/project.ts, the one home — so the kickoff's
+            "one edit renames everything" promise actually holds here too. */}
+        <h1 className="text-4xl font-bold text-fg-primary">{PROJECT_NAME}</h1>
+        <p className="max-w-prose text-base text-fg-secondary">{PROJECT_DESCRIPTION}</p>
       </div>
       <div className="flex flex-wrap items-center gap-md">
         <Link
