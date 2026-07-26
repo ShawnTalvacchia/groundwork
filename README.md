@@ -13,6 +13,8 @@ It gives a project three things: a work model (phases, modes, rituals), a small 
 
 *The dashboard of a project in flight. (Staged demo content: "Frond," a fictional plant-care app.)*
 
+**[Click around the real thing →](https://system-template.vercel.app/system)** — the day-one surface a fresh copy gives you: kickoff board open, trackers empty, strategy stubbed.
+
 ## How it works
 
 Work happens in phases. Every phase runs in one of three modes:
@@ -42,7 +44,11 @@ The kickoff's close ritual replaces this README with your project's own and dele
 
 Not a web project? The methodology works without the app. Delete `app/`, `components/`, `lib/`, and the web config; keep `docs/` and `CLAUDE.md`.
 
-> **Heads up:** `/system` ships with no auth gate. Fine locally. Add real protection before deploying it anywhere public, because it renders your whole strategy shelf.
+## Two audiences
+
+Your product is public. Your record is not.
+
+`/system` renders the strategy, decisions, and open questions, so it ships gated. Local dev is open with no setup. On a deploy, set `SYSTEM_PASSWORD` to put it behind a password, or `SYSTEM_GATE=off` to make it deliberately public. Set neither and it blocks itself and tells you which one to set, so forgetting can never publish your record.
 
 ## License
 

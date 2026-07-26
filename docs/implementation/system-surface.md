@@ -14,9 +14,35 @@ read-when: "/system surface changes — new page, IA change, doc-format change"
 
 Because the site deploys from pushes, the surface updates with every commit: push → rebuild → the pages re-read `docs/`.
 
-> **⚠ There is no auth gate — add one before deploying publicly.** The template ships `/system` **open**, protected only by `robots: noindex` (`app/system/layout.tsx`), which stops indexing but not access. Every page here renders your strategy shelf, roadmap, open questions, and decisions log. `noindex` is not access control: anyone with the URL can read all of it. Deploying to a public host without adding real auth (middleware, platform password protection, or an access-controlled deployment) publishes the project's entire internal record. A placeholder password isn't shipped on purpose — the adopter picks the mechanism their host and threat model call for.
+**Two audiences, one repo.** The product is public and indexed; `/system` is the team's record. That split is enforced in code by the gate below, not left to the adopter.
 
 > **This doc is the spec; the code is in the repo.** The dashboard ships with the template — `lib/system.ts`, `lib/derivation.ts`, `lib/styleguide.ts`, `app/system/*`, and the starter `app/globals.css`. Run it with `npm run dev` and open `/system`. This spec is the contract the parsed docs uphold, and the parser markers in those docs (`<!-- PARSED by … -->`) point back here.
+
+## The gate
+
+`/system` is gated by `proxy.ts` at the edge. Four states:
+
+| Environment | `/system` | Why |
+|---|---|---|
+| development | open | The gate must never be local setup friction. |
+| `SYSTEM_GATE=off` | open | Deliberately public. The choice is explicit and on the record. |
+| `SYSTEM_PASSWORD=…` | password, then cookie | The default for a deployed project. |
+| production, neither set | **blocked (503)** | Nobody decided; the safe reading of that is "don't publish the record." |
+
+The last row is the design. A deploy that forgets to configure the gate fails closed and names both variables, so **public-by-choice replaces public-by-forgetting**. `robots: noindex` still ships, but it is a search-engine hint, never access control — the gate is what makes the record private.
+
+The cookie value is a hash of the secret, so rotating `SYSTEM_PASSWORD` invalidates every session without a session store. The product is never gated; the matcher covers `/system` only.
+
+**Alternatives, and when to prefer them:**
+
+| Mechanism | Prefer it when | Cost |
+|---|---|---|
+| Shipped gate (`SYSTEM_PASSWORD`) | Default. Solo or small team, one shared secret, any host. | One env var. No accounts, no audit trail. |
+| Host password protection (Vercel, Cloudflare Access) | Your host offers it and you want the gate above the app entirely. | Platform lock-in; often a paid tier. |
+| Identity provider (SSO, OAuth) | Real teams, per-person access, revocation, an audit trail. | A dependency and a login flow to maintain. |
+| Second private deployment | The record must never share an origin with the product. | Two deploys of one repo to keep in sync. |
+
+Set `SYSTEM_GATE=off` only for a deliberately public dashboard — a demo, a template, or a project whose record is meant to be read.
 
 ## The law: derived, never authored
 

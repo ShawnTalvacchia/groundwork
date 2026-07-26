@@ -71,6 +71,13 @@ npm run dev        # → http://localhost:3000/system
 
 It boots with **zero drift alarms** against the empty template, so you watch the surface fill in as you do the kickoff. The starter design system lives in `app/globals.css` (edit those tokens to make it yours — the token *names* are load-bearing, the *values* are yours); `app/system/` + `lib/system.ts` + `lib/styleguide.ts` are the parsers and pages — see `docs/implementation/system-surface.md` for the law (derived, never authored) and the page→source map.
 
-> **⚠ `/system` ships with no auth — add some before you deploy it publicly.** It's noindexed, but `noindex` stops search engines, not people. Every page renders your strategy, roadmap, open questions, and decisions. Local dev is fine as-is; a public deploy needs real protection (middleware, your host's password protection, or a private deployment). Details: `docs/implementation/system-surface.md` → What this is.
+**Deploying: your product is public, your record is gated.** `/system` renders your strategy, roadmap, questions, and decisions, so it ships behind a gate (`proxy.ts`):
+
+- Local dev is always open. Nothing to configure.
+- Deploying? Set **`SYSTEM_PASSWORD`** and the record sits behind a password.
+- Want it public anyway (a demo, an open project)? Set **`SYSTEM_GATE=off`**.
+- Set neither in production and `/system` blocks itself, telling you which variable to set. Forgetting can't publish your record.
+
+Alternatives and their tradeoffs: `docs/implementation/system-surface.md` → The gate.
 
 The methodology works without the web app too — the docs are the source of truth. For a **non-web project**, delete `app/`, `components/`, `lib/`, and the web config files; keep `docs/` + `CLAUDE.md`.

@@ -33,3 +33,6 @@ yarn-error.log*
 
 # agent worktrees (live inside the repo; keep .claude/launch.json tracked)
 .claude/worktrees/
+
+# verification build dir (npm run verify) — never collides with dev
+.next-verify/
