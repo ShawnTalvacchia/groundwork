@@ -21,6 +21,20 @@ Canonical rules + glossary: `docs/CONTRIBUTING.md` → "The Work Model." Live pi
 4. **No feature sprawl.** If it's not on the phase board, don't build it without discussion.
 5. **Phase close = doc review.** See `docs/CONTRIBUTING.md` → Closing a Phase.
 6. **Push back, don't just comply.** When there's a better approach, make the case — lead with a recommendation, not a menu.
+7. **Never run `npm audit fix --force`.** In this dependency tree it "fixes" advisories by **downgrading Next.js to 9.x** — a pre-App-Router version from 2020 that cannot run this app. `npm audit fix` (without `--force`) is safe. See "A note on `npm audit`" below before acting on a vulnerability report.
+
+## A note on `npm audit`
+
+<!-- Delete this section once npm audit runs clean; it describes a real, current state, not a permanent rule. -->
+
+A fresh `npm install` reports around a dozen **high** severity advisories. They are all transitive and none is a live exposure for this app:
+
+- Most are the **ESLint chain** — a denial-of-service in a glob matcher used by a linter that only ever runs on your own machine.
+- The rest are **inside Next.js's own bundled dependencies** (`postcss`, and `sharp`, which is only used by `next/image` — a component this template never imports).
+
+They cannot currently be resolved from here. ESLint 10 breaks `eslint-plugin-react`, and the vulnerable packages are bundled inside `eslint-config-next`, so the fix belongs upstream. Dropping `eslint-config-next` would silence the report at the cost of the React and accessibility rules that catch real mistakes — a bad trade.
+
+**What to do:** keep Next.js patched (`npm install next@latest` for patch and minor releases; that is what fixed the last real one). Re-check with `npm audit` after upstream releases. Do not force it.
 
 ## Stack
 

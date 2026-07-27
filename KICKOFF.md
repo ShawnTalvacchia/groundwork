@@ -87,6 +87,10 @@ npm install
 npm run dev        # → http://localhost:3000/system
 ```
 
+> **`npm install` will report ~12 "high severity vulnerabilities." Don't panic, and don't force-fix them.** They're all in build and lint tooling that runs on your machine, not in anything your site serves. The real ones get patched promptly and are already applied.
+>
+> **Never run `npm audit fix --force`.** Here it "fixes" things by downgrading Next.js to a 2020 version that can't run this app. Plain `npm audit fix` is safe. Full explanation: `CLAUDE.md` → A note on `npm audit`.
+
 It boots with **zero drift alarms** against the empty template, so you watch the surface fill in as you do the kickoff. The starter design system lives in `app/globals.css` (edit those tokens to make it yours — the token *names* are load-bearing, the *values* are yours); `app/system/` + `lib/system.ts` + `lib/styleguide.ts` are the parsers and pages — see `docs/implementation/system-surface.md` for the law (derived, never authored) and the page→source map.
 
 **Deploying: your product is public, your record is gated.** `/system` renders your strategy, roadmap, questions, and decisions, so it ships behind a gate (`proxy.ts`):
