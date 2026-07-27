@@ -71,6 +71,13 @@ Deploy the same repo twice. The public one leaves `SYSTEM_GATE` unset so `/syste
 DOCS_ROOT=meta-docs
 ```
 
+Pair it with `PROJECT_NAME_OVERRIDE` when the second deployment should also be *labelled* differently:
+
+```
+DOCS_ROOT=meta-docs
+PROJECT_NAME_OVERRIDE=My Project (internal)
+```
+
 Two uses. A public deploy can render a **deliberately empty or curated** tree while the private deploy renders the real one. And a repo that is itself a template can keep its shipped `docs/` pristine for adopters while tracking its own work in a second tree on a non-default branch — the branch the private deployment builds from. Keep that second tree **additive** (a new directory, never edits to `docs/`) and merging the main branch into it stays conflict-free.
 
 ### C. Local only, for now
