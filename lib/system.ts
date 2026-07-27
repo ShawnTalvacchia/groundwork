@@ -12,7 +12,16 @@ import path from "node:path";
 // "two deployments of one repo" (implementation/shipping.md → Where the record
 // lives), where a public deploy and a private one render different records
 // from the same codebase. Relative paths resolve from the project root.
-const DOCS_DIR = path.resolve(process.cwd(), process.env.DOCS_ROOT || "docs");
+//
+// Written as an explicit ternary on purpose. The inline form
+// `path.resolve(cwd, process.env.DOCS_ROOT || "docs")` builds fine but poisons
+// Next's build trace: unable to resolve the env var statically, the tracer
+// emits a bogus dependency that lands on `.next/lock`, and deploy platforms
+// that stat every traced file fail with ENOENT after a successful build. The
+// ternary keeps the default branch statically resolvable.
+const DOCS_DIR = process.env.DOCS_ROOT
+  ? path.resolve(process.cwd(), process.env.DOCS_ROOT)
+  : path.join(process.cwd(), "docs");
 
 /* ── Tiers ─────────────────────────────────────────────────────────── */
 

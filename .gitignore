@@ -36,3 +36,4 @@ yarn-error.log*
 
 # verification build dir (npm run verify) — never collides with dev
 .next-verify/
+.env*
