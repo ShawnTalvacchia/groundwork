@@ -16,7 +16,7 @@ export default function Home() {
       <div className="flex flex-col gap-md">
         <div className="flex items-center justify-between gap-md">
           <p className="text-2xs font-semibold uppercase tracking-wide text-fg-tertiary">
-            Built with Groundwork
+            Placeholder front door
           </p>
           <ThemeToggle />
         </div>
@@ -39,6 +39,10 @@ export default function Home() {
           walks it: fill the strategy shelf, choose the stack, queue the first product phase.
         </p>
       )}
+      <p className="max-w-prose text-xs text-fg-tertiary">
+        This page is scaffolding, not your product. Replace{" "}
+        <code className="sys-code">app/page.tsx</code> when you have a real landing page.
+      </p>
     </main>
   );
 }

@@ -19,6 +19,7 @@
  *  overwrite it. A value that looks unfinished is the point. */
 export const PROJECT_NAME = "Your Project";
 
-/** One line, used as the metadata description and on the link preview. */
-export const PROJECT_DESCRIPTION =
-  "Built with Groundwork — a work model, a doc shelf, and a dashboard derived from them.";
+/** One line about YOUR project — the metadata description and the line on the
+ *  link-preview image. Also a placeholder; describe the product, not the
+ *  template it was built from. */
+export const PROJECT_DESCRIPTION = "One line about what this project does.";
