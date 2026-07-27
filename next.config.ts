@@ -9,7 +9,10 @@ const nextConfig: NextConfig = {
   // every page answers "Internal Server Error" until dev restarts — a
   // confusing failure that looks like a code bug. `npm run verify` sets
   // NEXT_DIST_DIR so the two never touch the same directory.
-  distDir: process.env.NEXT_DIST_DIR || ".next",
+  //
+  // Set ONLY when the env var is present: naming distDir explicitly, even as
+  // ".next", changes how the deploy platform detects build output.
+  ...(process.env.NEXT_DIST_DIR ? { distDir: process.env.NEXT_DIST_DIR } : {}),
 };
 
 export default nextConfig;

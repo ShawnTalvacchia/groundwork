@@ -1,5 +1,15 @@
+# .vercelignore REPLACES .gitignore for deploy uploads, so anything secret or
+# heavy has to be listed here too — .gitignore alone will not protect it.
+
+# secrets — never upload
+.env
+.env.*
+
+# build output + deps (the platform builds these itself)
 .next
 .next-verify
 node_modules
-reference
+
+# local-only
 .claude/worktrees
+reference
