@@ -31,6 +31,7 @@ docs/
     _walkthrough-template.md
   implementation/
     system-surface.md         the /system dashboard spec (its law + page→source map)
+    shipping.md               naming, hosting, the gate, and renaming later
 app/, components/, lib/        the live /system dashboard — Next.js + the doc parsers
 app/globals.css                the starter design system (edit these tokens to re-skin)
 package.json, *.config.*       the web host (Next.js, Tailwind v4)
@@ -49,14 +50,31 @@ The kickoff is the **bootstrap** — the one-time phase that runs *before* the t
    > Choose the product's stack from the project's goals and a **fresh check** of current tooling and hosting costs — they change fast, so check the web rather than trusting an assistant's training-data priors or what this repo ships with. If the right stack isn't Next.js, fine: the dashboard lives beside it as its own small app.
    >
    > The test: the kickoff can say why the stack is right in one sentence that isn't "it came with the template."
-4. **Make it yours** (web projects). Two edits, both one-and-done:
-   - **Name it** — set `PROJECT_NAME` + `PROJECT_DESCRIPTION` in `lib/project.ts` (they ship as obvious placeholders). That one edit renames the browser tab, the `/system` header wordmark, the front door at `/`, and the generated link-preview image. The header carries the *project's* name on purpose: "System" is already the first tab, so a wordmark saying "System" is a label repeated, not a place named.
-   - **Re-skin** — edit the tokens in `app/globals.css`; the styleguide re-derives on the next build. Token *names* are load-bearing (the dashboard's utilities come from them); token *values* are yours.
+4. **Name it, everywhere.** One edit to `lib/project.ts` (`PROJECT_NAME` + `PROJECT_DESCRIPTION`, both obvious placeholders) renames every in-app surface: the browser tab, the `/system` wordmark, the front door at `/`, the link-preview image. The wordmark carries the *project's* name on purpose, since "System" is already the first tab.
+
+   **The app boundary is not the identity boundary.** Four more places hold the name, and each is its own edit:
+
+   - `package.json` → `"name"`
+   - your git repo
+   - the local folder
+   - your deploy project, once there is one
+
+   Set them together now. Renaming later is doable but has a trap in the deploy step: `implementation/shipping.md` → Where your project's name lives.
+
+5. **Decide where the record lives — or defer, deliberately.** Your product is public; `/system` is your strategy, decisions, and open questions. Three arrangements, with real tradeoffs, in `implementation/shipping.md` → Where the record lives:
+
+   - **One deployment, `/system` gated** (what ships): simplest, reachable from anywhere with a password, record shares an origin with the product.
+   - **Two deployments of one repo**: strongest separation and real per-person access, at the cost of two pipelines.
+   - **Local only, for now**: zero config, zero exposure, no access from another device.
+
+   If you're still shaping the system and have no live pages to show, **local-only is a legitimate answer** — record it in `decisions.md` with what would change your mind, and revisit at first deploy. Nothing here has to be wired today. The gate fails closed in production, so a deploy can't quietly publish the record while this is still undecided.
+
+6. **Re-skin** (web projects) — edit the tokens in `app/globals.css`; the styleguide re-derives on the next build. Token *names* are load-bearing (the dashboard's utilities come from them); token *values* are yours.
 
    The starter favicon (`app/icon.svg`) and link preview (`app/opengraph-image.tsx`) pick up the new name automatically — they're generic, not broken, so replacing them with real artwork is punch-list work, not kickoff work.
-5. **Set the ROADMAP** — the Goal line, Where We Are, and queue your **first product phase** with a one-line thesis + a seed in `planning/queued/`.
-6. **Log the kickoff decisions** in `decisions.md` (the stack choice, the vision as first drafted).
-7. **Close the kickoff** with the verification handoff (present the filled shelf for a read), then work the board's close items — they replace the README with your project's own and **delete this file** — and open your first product phase from the roadmap.
+7. **Set the ROADMAP** — the Goal line, Where We Are, and queue your **first product phase** with a one-line thesis + a seed in `planning/queued/`.
+8. **Log the kickoff decisions** in `decisions.md` (the stack choice, the vision as first drafted).
+9. **Close the kickoff** with the verification handoff (present the filled shelf for a read), then work the board's close items — they replace the README with your project's own and **delete this file** — and open your first product phase from the roadmap.
 
 After that, work the normal loop: queue → open a phase from its mode's template → orient (align or challenge) → build → (product) walkthrough → close (distill + delete). The whole loop is in `docs/CONTRIBUTING.md`.
 
@@ -78,6 +96,6 @@ It boots with **zero drift alarms** against the empty template, so you watch the
 - Want it public anyway (a demo, an open project)? Set **`SYSTEM_GATE=off`**.
 - Set neither in production and `/system` blocks itself, telling you which variable to set. Forgetting can't publish your record.
 
-Alternatives and their tradeoffs: `docs/implementation/system-surface.md` → The gate.
+Choosing between one gated deployment, two deployments, or local-only: `docs/implementation/shipping.md` → Where the record lives. Gate mechanics and host-level alternatives: `docs/implementation/system-surface.md` → The gate.
 
 The methodology works without the web app too — the docs are the source of truth. For a **non-web project**, delete `app/`, `components/`, `lib/`, and the web config files; keep `docs/` + `CLAUDE.md`.

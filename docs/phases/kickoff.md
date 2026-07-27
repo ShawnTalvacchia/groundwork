@@ -18,7 +18,8 @@ read-when: "the first board — work it before anything else; deleted at close, 
 - [ ] **Answer the seeded Open Questions** (`planning/Open Questions & Assumptions Log.md`) — who's the user, what's out of scope, the smallest thesis-proving thing, the riskiest assumption. Each answer becomes a decision, a strategy edit, or a queued phase; then delete the question.
 - [ ] **Fill the strategy shelf** — `strategy/Vision.md` (bedrock) + `Scope & Constraints.md`; flip both `status: draft → active` and set their `summary:`.
 - [ ] **Choose the stack** — fill CLAUDE.md's `## Stack` + `## Design & Code Conventions` blocks.
-- [ ] **Name the project** (web projects) — set `PROJECT_NAME` + `PROJECT_DESCRIPTION` in `lib/project.ts`. One edit renames the browser tab, the `/system` header wordmark, and the generated link-preview image.
+- [ ] **Name the project, everywhere** — `lib/project.ts` covers every in-app surface in one edit; `package.json`, the git repo, the folder, and the deploy project are each their own. Set them together (`implementation/shipping.md`).
+- [ ] **Decide where the record lives — or defer, deliberately** — one gated deployment · two deployments · local-only. Tradeoffs in `implementation/shipping.md`; the choice (including "not yet") goes in `decisions.md`.
 - [ ] **Make the design system yours** (web projects) — re-skin the tokens in `app/globals.css`; the styleguide re-derives on the next build. Token *names* are load-bearing; *values* are yours.
 - [ ] **Set the ROADMAP + queue the first product phase** — the Goal line, Where We Are, and one queued row with a one-line thesis and a seed in `planning/queued/`.
 - [ ] **Log the kickoff decisions** in `decisions.md` (the stack choice, the vision as first drafted).
