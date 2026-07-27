@@ -7,7 +7,12 @@ import path from "node:path";
 // the docs' existing formats (§N sections, P##/V# tables, FC items); the
 // formats never bend to the parsers.
 
-const DOCS_DIR = path.join(process.cwd(), "docs");
+// Which doc tree to render. Defaults to this project's own `docs/`. Set
+// DOCS_ROOT to point a deployment at a different tree — the mechanism behind
+// "two deployments of one repo" (implementation/shipping.md → Where the record
+// lives), where a public deploy and a private one render different records
+// from the same codebase. Relative paths resolve from the project root.
+const DOCS_DIR = path.resolve(process.cwd(), process.env.DOCS_ROOT || "docs");
 
 /* ── Tiers ─────────────────────────────────────────────────────────── */
 

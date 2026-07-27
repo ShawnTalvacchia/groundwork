@@ -59,11 +59,19 @@ What the template ships. Your product and your record deploy together; `proxy.ts
 
 ### B. Two deployments of one repo
 
-Deploy the same repo twice. The public one sets `SYSTEM_GATE` unset so `/system` blocks itself; the private one is access-controlled at the platform.
+Deploy the same repo twice. The public one leaves `SYSTEM_GATE` unset so `/system` blocks itself; the private one sets `SYSTEM_PASSWORD` or is access-controlled at the platform.
 
 - **Good:** the record never shares an origin with the product. Platform-level access control means real accounts and revocation, not a shared password.
 - **Cost:** two deploys to configure and keep in sync. More moving parts than most projects need.
 - **Pick it when:** the record must not sit behind app code, or you need per-person access.
+
+**`DOCS_ROOT` — pointing a deployment at a different record.** By default `/system` renders this project's `docs/`. Set `DOCS_ROOT` on a deployment to render a different tree instead:
+
+```
+DOCS_ROOT=meta-docs
+```
+
+Two uses. A public deploy can render a **deliberately empty or curated** tree while the private deploy renders the real one. And a repo that is itself a template can keep its shipped `docs/` pristine for adopters while tracking its own work in a second tree on a non-default branch — the branch the private deployment builds from. Keep that second tree **additive** (a new directory, never edits to `docs/`) and merging the main branch into it stays conflict-free.
 
 ### C. Local only, for now
 
