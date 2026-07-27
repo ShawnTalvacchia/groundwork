@@ -13,7 +13,7 @@ It gives a project three things: a work model (phases, modes, rituals), a small 
 
 *The dashboard of a project in flight. (Staged demo content: "Frond," a fictional plant-care app.)*
 
-**[Click around the real thing →](https://system-template.vercel.app/system)** — the day-one surface a fresh copy gives you: kickoff board open, trackers empty, strategy stubbed.
+**[Click around the real thing →](https://groundwork-system.vercel.app/system)** — the day-one surface a fresh copy gives you: kickoff board open, trackers empty, strategy stubbed.
 
 ## How it works
 
