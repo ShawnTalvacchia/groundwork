@@ -1,5 +1,6 @@
 import Link from "next/link";
 import {
+  boardName,
   getActiveBoards,
   getFutureItems,
   getOpenQuestions,
@@ -51,7 +52,7 @@ export default function WorkPage() {
                 key={b.slug}
                 href="/system/phase"
                 label={`Active board · ${MODE_META[b.mode].label}`}
-                value={b.title.split(" — ")[0]}
+                value={boardName(b.title)}
                 detail={`${b.done}/${b.total} tasks`}
               />
             ))

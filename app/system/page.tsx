@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { BookOpenText, Hammer, TreeStructure } from "@phosphor-icons/react/dist/ssr";
 import {
+  boardName,
   getActiveBoards,
   getAllDocs,
   getArchivedPhases,
@@ -106,7 +107,7 @@ export default function SystemOverview() {
                 key={b.slug}
                 href="/system/phase"
                 label={`Active board · ${modes.find((m) => m.key === b.mode)?.label ?? b.mode}`}
-                value={b.title.split(" — ")[0]}
+                value={boardName(b.title)}
                 detail={`${b.done}/${b.total} tasks`}
               />
             ))

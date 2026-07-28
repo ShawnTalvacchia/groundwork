@@ -753,6 +753,27 @@ function resolveMode(raw: string | undefined): BoardMode {
   return raw === "system" || raw === "side" ? raw : "product";
 }
 
+/**
+ * The phase's own name, for surfaces that show a board in one line.
+ *
+ * A board's h1 carries mold scaffolding around the name, and each mold puts
+ * the name somewhere different:
+ *
+ *   product  `# Checkout v1`
+ *   system   `# System Work — Restructure the trackers (ACTIVE)`
+ *   side     `# Sweep — P87 · P88 — opened 2026-07-28`
+ *
+ * So strip the scaffolding. Splitting on the first em dash instead reads the
+ * mold's prefix as the name on every system board.
+ */
+export function boardName(title: string): string {
+  return title
+    .replace(/\s*\((?:ACTIVE|PAUSED)\)\s*$/i, "")
+    .replace(/\s+—\s+opened\s+\d{4}-\d{2}-\d{2}\s*$/i, "")
+    .replace(/^System Work\s+—\s+/i, "")
+    .trim();
+}
+
 export interface ActivePhase {
   slug: string;
   title: string;
