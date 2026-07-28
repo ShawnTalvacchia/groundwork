@@ -98,8 +98,12 @@ ANTI-PATTERNS the structure exists to fight:
 
 DRIFT RULES — the two failure modes this template fights at phase-close:
 
-  1. Code change → update the walkthrough item in the SAME edit. Stale
-     walkthrough text is worse than no walkthrough.
+  1. Any change → update the walkthrough item in the SAME edit. Stale
+     walkthrough text is worse than no walkthrough. The rule binds the phase
+     MAKING the change, not the phase that owns this walkthrough — a concurrent
+     board of any mode fixes the items it invalidates, right here. Flagging
+     them on your own board does not work: that board is deleted at your close
+     and the stale item outlives it.
   2. Decisions are current-state, not an event log. If a logged decision gets
      superseded, EDIT the existing entry — don't append alongside the stale one.
      The signal you got this wrong: at close, one surface has multiple Decisions

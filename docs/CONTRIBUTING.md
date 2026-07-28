@@ -28,6 +28,7 @@ Rules for humans and agents working in this repo. Read before building. This is 
 - **Trackers hold candidates, not queued work.** A tracker note that bloats, or a cluster of connected notes, promotes into a phase — the rows leave the trackers and the board gets a cohesive chunk. Tracker work needed sooner than later gets a seed and/or a board, depending on how soon it'll be picked up.
 - **Reading is never gated — the touch bands gate pens, not eyes.** Every opening ritual has a bounded orient step (read the mode's core set whole; actively align to the emphasized set), and any doc may be pulled freely mid-build. Orientation is **align or challenge**: new work pressing on an old commitment isn't drift to suppress — it's a structured challenge to raise (§ Doc Tiers), and sometimes the challenge should win. That pressure is how new directions, features, and strategy are born.
 - **Concurrency — one open board per mode.** One product and (when needed) one system board may be open simultaneously; never two boards of the same mode. Side phases run alongside either.
+- **A change that makes an open walkthrough item inaccurate fixes that item in the same edit — whoever made the change.** The rule binds the phase *making* the change, not the phase that owns the walkthrough, so it reaches across concurrent boards and across modes. Never defer it to the owning phase: a note on your board is deleted at your close, and the stale item outlives it. (Detail: § During a Phase.)
 - **A phase belongs to one project — the repo its board lives in.** The board names that repo at open, and everything outside it is out of bounds for every mode: no edits, no commits, no "while I'm here." A sibling project's problem gets written down and handed to a session running *in* that project; re-scoping takes a new session there, not a note here.
 - **One phase per session is the default; a session that legitimately runs several still gives each its own board.** Succession is fine — close one, open the next. What isn't fine is reactive work with no board at all. A fix small enough not to earn a board is a punch item (≤30 min, any mode), swept later.
 - **Commits are mode-pure.** A commit serves exactly one board and names it in the message. Never mix product and system changes in one commit.
@@ -188,7 +189,7 @@ Before writing any code for a new phase, complete the **Opening Checklist** on t
 - When you finish a task, update the phase board status immediately.
 - If you change a feature, update its **feature doc** in `features/`.
 - If you make a significant decision, record it in the relevant feature doc under a "Decisions" section.
-- **If a code change makes an active walkthrough item's description inaccurate, update the walkthrough item in the same edit.** Stale walkthrough text is worse than no walkthrough — verifiers look for behaviour that's no longer there (see `phases/_walkthrough-template.md` → "Drift rules").
+- **Keep every open walkthrough accurate, not only this phase's** (§ Rules shared by all modes — the rule binds whoever makes the change). Stale walkthrough text is worse than no walkthrough: verifiers look for behaviour that's no longer there (see `phases/_walkthrough-template.md` → "Drift rules").
 
 ### Walkthrough (the review stage)
 
@@ -207,7 +208,7 @@ Closing comes *after* the walkthrough passes, and **consumes** it — the Decisi
 
 These steps are the **canonical closing process — the single source of truth.** Work through them in order. The phase board does **not** repeat them; it carries only **phase-specific** close items under its "Close notes" section. Do not copy these steps onto the board — that duplication is what drifts.
 
-1. **Confirm the walkthrough passed.** Every O and V point checked, acceptance criteria holding against the running app.
+1. **Confirm the walkthrough passed.** Every O and V point checked, acceptance criteria holding against the running app. **If another phase touched these surfaces since the items were written, re-read the items against the running app first** — that phase owed the fix in its own edit, and this is where a miss gets caught.
 2. **Sweep the walkthrough's "Decisions surfaced" section.** A plain log — process each entry in order: update the named home doc per the `→` annotation, then check it off in the phase board's Closing Checklist. **The walkthrough cannot be archived until every entry has been propagated.** **Then lift the load-bearing subset into `decisions.md`** (What/Why/Where, newest first) — only entries that would surprise a reader in six months or that future-us might reopen.
 3. **Update all affected feature docs.** Scan for anything else the phase changed (component patterns, edge cases, copy conventions). The feature docs must reflect the new reality.
 4. **Update the Open Questions log.** Close any questions this phase resolved — and **compress each resolved item to a one-line pointer at its home doc.** Add any new questions that emerged.
