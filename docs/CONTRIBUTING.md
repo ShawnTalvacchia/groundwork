@@ -28,6 +28,8 @@ Rules for humans and agents working in this repo. Read before building. This is 
 - **Trackers hold candidates, not queued work.** A tracker note that bloats, or a cluster of connected notes, promotes into a phase — the rows leave the trackers and the board gets a cohesive chunk. Tracker work needed sooner than later gets a seed and/or a board, depending on how soon it'll be picked up.
 - **Reading is never gated — the touch bands gate pens, not eyes.** Every opening ritual has a bounded orient step (read the mode's core set whole; actively align to the emphasized set), and any doc may be pulled freely mid-build. Orientation is **align or challenge**: new work pressing on an old commitment isn't drift to suppress — it's a structured challenge to raise (§ Doc Tiers), and sometimes the challenge should win. That pressure is how new directions, features, and strategy are born.
 - **Concurrency — one open board per mode.** One product and (when needed) one system board may be open simultaneously; never two boards of the same mode. Side phases run alongside either.
+- **A phase belongs to one project — the repo its board lives in.** The board names that repo at open, and everything outside it is out of bounds for every mode: no edits, no commits, no "while I'm here." A sibling project's problem gets written down and handed to a session running *in* that project; re-scoping takes a new session there, not a note here.
+- **One phase per session is the default; a session that legitimately runs several still gives each its own board.** Succession is fine — close one, open the next. What isn't fine is reactive work with no board at all. A fix small enough not to earn a board is a punch item (≤30 min, any mode), swept later.
 - **Commits are mode-pure.** A commit serves exactly one board and names it in the message. Never mix product and system changes in one commit.
 - Boards work the main working tree — parallelism is *between* phases, not within one. (Spawned side tasks are the exception: they run in worktrees, per Mode 3.)
 - **Routing ("where does this go?"):** ≤30 min isolated fix → punch list, swept later · focused work, no strategy → side phase · structural thesis or cross-surface coupling → product phase · workflow/doc/dashboard work → system phase · strategic and unresolved → Open Questions · known direction, no trigger yet → Future Considerations.
@@ -59,13 +61,13 @@ Rules for humans and agents working in this repo. Read before building. This is 
 
 ### Mode 2 · System — tending the system
 
-**Purpose:** Meta-work on the docs, workflow, and `/system` surface themselves — restructuring a tracker, rewriting these rules, reorganizing the doc tree, dashboard changes. Product-**agnostic** by definition, and the **inverse of a side phase**: the governance docs are its home ground. It must never settle product strategy in passing — if a strategic question surfaces mid-phase, it goes to Open Questions, not decided.
+**Purpose:** Meta-work on the docs, workflow, and `/system` surface themselves — restructuring a tracker, rewriting these rules, reorganizing the doc tree, dashboard changes, a styleguide pass. Product-**agnostic** by definition, and the **inverse of a side phase**: the governance docs are its home ground. It must never settle product strategy in passing — if a strategic question surfaces mid-phase, it goes to Open Questions, not decided.
 
-**Home ground:** CLAUDE.md, this file, ROADMAP structure, the trackers' formats, the templates, the doc tree, and the system surface's code (`lib/system.ts`, `app/system/`).
+**Home ground:** the governance docs (CLAUDE.md, this file, ROADMAP structure, the trackers' formats, the templates, the doc tree) **and production code that is the system's own surface** — `lib/system.ts`, `app/system/`, and the shared conventions the system defines (styleguide, design tokens, shared component patterns) wherever those live.
 
 **Careful:** `decisions.md`'s prior entries (amend with a new dated entry, never rewrite history), and mechanical ripples into product-facing docs when a governance change lands (repoint the refs; don't touch their content).
 
-**Gated:** product features, seeded content, strategy doc *content*. Not forbidden: suggest it, and it lands through a product phase.
+**Gated:** **product behavior** — features, flows, product copy, seeded content, strategy doc *content*. The band is purpose, not file location: production code is home ground while the edit serves the system's own surface, and gated the moment it adds or changes what the product does for its users. Not forbidden: suggest it, and it lands through a product phase.
 
 **Opening ritual:**
 

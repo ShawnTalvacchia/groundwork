@@ -13,6 +13,7 @@ read-when: "while this system phase is open (deleted at close — decisions.md c
 
 ## Session open — YYYY-MM-DD
 
+- **Project:** [the repo this board lives in — work outside it gets handed over, not done]
 - **Friction named:** [what this phase fixes, in one or two sentences]
 - **Scope agreed with the PO:** [what's in, what's out]
 - **Settled calls this reopens:** [entries from `decisions.md` / tiered docs this work touches — each is a structured challenge, logged win or lose; "none" is a valid answer]

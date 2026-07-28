@@ -22,7 +22,9 @@ Decisions the author made that warrant a second look — direction, not bug-hunt
 Identifier prefix: **`O`** (O1, O2, ...).
 
 - [ ] **O1. {One-line framing of the call.}** Why it could go another way. ({who's looking} → `/url` to see it.)
-- [ ] **O2. ...**
+- [x] **O2. {One-line framing of the call.}** Resolved: {the call that was made, in one line}. → Decisions log
+
+**Resolved items look like O2** — `[x]` plus a one-line pointer, and nothing else. The rationale, the alternatives, and what it changes belong in the Decisions log at the bottom, which is what phase-close propagates from. A paragraph of reasoning parked up here is a decision the close sweep will never see.
 
 ---
 

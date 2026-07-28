@@ -11,6 +11,8 @@ read-when: "board close (deleted at close — the moved tracker rows + the commi
 
 **Mode: side.** Light board: the tracker items this session pulled. Opening/closing ritual in `CONTRIBUTING.md` → Mode 3. Deleted at close.
 
+**Project:** [the repo this board lives in — work outside it gets handed over, not done]
+
 ## Items
 
 - [ ] P## · [one line — what the fix is]

@@ -10,6 +10,8 @@ read-when: When any task is completed or blocked
 
 **Goal:** One sentence describing what "done" looks like.
 
+**Project:** [the repo this board lives in — work outside it gets handed over, not done]
+
 **Depends on:** Previous phases or conditions.
 
 **Refs:** [[doc-1]], [[doc-2]]
