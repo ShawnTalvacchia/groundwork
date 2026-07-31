@@ -209,6 +209,10 @@
   gap: var(--space-3);
   padding: var(--space-4);
   background: var(--surface-inset);
+  /* One step stronger than the shelf's own surface — enough to close the
+     shape without competing with the cards inside it. The ramps handle the
+     direction: darker than the surface in light, lighter in dark. */
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-panel);
 }
 

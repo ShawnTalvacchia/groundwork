@@ -86,17 +86,24 @@ export function Tile({
  *  and the shelf still renders so the roadmap stays one click away on day one. */
 export function QueueShelf({
   items,
-  limit = 3,
+  limit = 4,
 }: {
   items: { name: string; mode: BoardMode | null; seedPath: string | null }[];
   limit?: number;
 }) {
   const shown = items.slice(0, limit);
-  const hidden = items.length - shown.length;
   return (
     <div className="sys-shelf">
       <div className="flex items-baseline justify-between gap-md">
-        <span className="text-2xs font-semibold uppercase tracking-wide text-fg-tertiary">Queue</span>
+        {/* "Roadmap", not "Queue": the shelf is a window onto that page, and
+            the count is what keeps a capped list from reading as the whole
+            list — no separate "+N more" line needed once it is stated. */}
+        <span className="text-2xs font-semibold uppercase tracking-wide text-fg-tertiary">
+          Roadmap
+          <span className="ml-sm font-normal">
+            {items.length} {items.length === 1 ? "phase" : "phases"} queued
+          </span>
+        </span>
         <Link href="/system/roadmap" className="text-xs text-fg-secondary underline underline-offset-2">
           View roadmap →
         </Link>
@@ -128,13 +135,6 @@ export function QueueShelf({
             );
           })}
         </div>
-      )}
-      {/* Never truncate silently: a shelf showing 3 of 5 reads as "that's all"
-          unless it says otherwise. */}
-      {hidden > 0 && (
-        <p className="text-2xs text-fg-tertiary">
-          +{hidden} more {hidden === 1 ? "phase" : "phases"} on the roadmap
-        </p>
       )}
     </div>
   );

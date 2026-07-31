@@ -58,7 +58,7 @@ A fixed header carries the main tabs — **System** + three groups (Work · Stru
 
 ## The three groups
 
-- **Work** — *what's being done and what's waiting*: the active board(s) badged by mode at full width, the **queue shelf** beneath it, and the three trackers. The shelf shows the queue rather than counting it — a tile whose only content was a number said less in the same space, and it never named a single phase. It caps at three and says how many it is holding back; a project with an empty queue still gets the shelf, because that is where the roadmap link lives.
+- **Work** — *what's being done and what's waiting*: the active board(s) badged by mode at full width, the **queue shelf** beneath it, and the three trackers. The shelf shows the queue rather than counting it — a tile whose only content was a number said less in the same space, and it never named a single phase. It is labelled `ROADMAP`, since that is the page it is a window onto, and carries the **full** queue count beside the label: the cards cap at four, so the count is what stops a capped list from reading as the whole list. A project with an empty queue still gets the shelf, because that is where the roadmap link lives.
 - **Structure** — the shape of the project: the feature registry, the strategy shelf, the docs index (by tier + freshness), the shipped timeline, the decisions log, and the styleguide.
 - **Method** — *how we work*, rendered rather than linked: the phase arc, the three modes with their full rituals, the trackers model, the tier physics, and the glossary. The rulebook docs (CONTRIBUTING, CLAUDE.md) appear only as source notes at the foot of the page they back.
 
@@ -66,7 +66,7 @@ A fixed header carries the main tabs — **System** + three groups (Work · Stru
 
 | Page | Renders from |
 |------|--------------|
-| Overview | counts from every list + the Glossary + `ROADMAP.md` Where We Are + doc freshness + the **queue shelf**: the next 3 queued rows joined to their seeds, mode-badged, each linking to its seed (`QueueShelf`, shared with Work → Overview) |
+| Overview | counts from every list + the Glossary + `ROADMAP.md` Where We Are + doc freshness + the **queue shelf**: the next 4 queued rows joined to their seeds, mode-badged, each linking to its seed, under the full queue count (`QueueShelf`, shared with Work → Overview) |
 | Active board(s) | `docs/phases/*.md` (templates excluded) — the board in full under a mode badge + progress. Heavy boards derive it from each `## Workstream` section's Status-cell task rows + legacy checkboxes; light boards (no workstreams) count their `## Items` checkboxes directly, excluding the closing checklist |
 | Roadmap | `ROADMAP.md` (Where We Are, the queue table — any mode, horizon) + `planning/queued/*.md` seeds (`getQueuedSeeds` — frontmatter + lede feed the cards, `mode:` badges each; the whole card links to its seed; the invariant is bidirectional and mode-agnostic — an orphaned seed or a seedless row trips the drift banner) |
 | Questions | `planning/Open Questions & Assumptions Log.md` (`## N. Topic` → `### Question?` with Area/Opened/Priority/Thinking/Resolves-when; everything in the file is open — resolved is deleted) |
