@@ -5,11 +5,12 @@ import {
   getFutureItems,
   getOpenQuestions,
   getPunchItems,
+  getQueuedSeeds,
   getRoadmap,
   MODE_META,
 } from "@/lib/system";
 import { GROUPS } from "../nav-model";
-import { Tile } from "../ui";
+import { QueueShelf, Tile } from "../ui";
 
 const group = GROUPS.find((g) => g.slug === "work")!;
 
@@ -20,6 +21,11 @@ export default function WorkPage() {
   const openItems = questions.reduce((n, t) => n + t.questions.length, 0);
   const punch = getPunchItems();
   const future = getFutureItems();
+  const seeds = getQueuedSeeds();
+  const queue = roadmap.phases.map((p) => {
+    const seed = seeds.find((s) => s.phase === p.name);
+    return { name: p.name, mode: seed?.mode ?? null, seedPath: seed?.relPath ?? null };
+  });
   const blurb = (slug: string) => group.pages.find((p) => p.slug === slug)?.blurb ?? "";
 
   return (
@@ -37,14 +43,15 @@ export default function WorkPage() {
 
       <section className="flex flex-col gap-md">
         <h2 className="text-lg font-semibold text-fg-primary">Active now</h2>
-        {/* Equal cells: the board(s) and the roadmap are peers here. */}
-        <div className="grid gap-md sm:grid-cols-2">
+        {/* Same shape as the hub: the board full width, then the queue itself
+            rather than a tile counting it. */}
+        <div className={`grid gap-md ${boards.length > 1 ? "sm:grid-cols-2" : ""}`}>
           {boards.length === 0 ? (
             <Tile
               href="/system/phase"
               label="Active board"
               value="Between boards"
-              detail={`${roadmap.phases.length} phases queued`}
+              detail="no phase open — the queue below is what's next"
             />
           ) : (
             boards.map((b) => (
@@ -57,13 +64,8 @@ export default function WorkPage() {
               />
             ))
           )}
-          <Tile
-            href="/system/roadmap"
-            label="Roadmap"
-            value={roadmap.phases.length}
-            detail="phases queued — the compass"
-          />
         </div>
+        <QueueShelf items={queue} />
       </section>
 
       <section className="flex flex-col gap-md">

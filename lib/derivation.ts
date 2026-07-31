@@ -8,11 +8,13 @@ import {
   getPunchItems,
   getQueuedSeeds,
   getRoadmap,
+  getStateReferences,
   getTierPhysics,
   getTiers,
   getTrackerModel,
   getWorkModel,
   TIER_ORDER,
+  type ReferenceKind,
 } from "@/lib/system";
 import { getComponentInventory, getStyleguide } from "@/lib/styleguide";
 
@@ -173,6 +175,34 @@ export function getDriftAlarms(): DriftAlarm[] {
         "getQueuedSeeds",
         "planning/queued/",
         `queued ROADMAP row "${p.name}" has no seed — its card has nothing to link to`,
+      );
+    }
+  }
+
+  // Dangling references: every tracker ID named in the two state docs must
+  // still exist in its tracker. The failure this catches is a doc claiming
+  // something is pending after the item shipped and left the tracker — a
+  // ROADMAP that names a punch item by ID three paragraphs above a line
+  // saying it is done, which no format check can see because both lines
+  // parse perfectly.
+  //
+  // Presence-not-count, like everything else here: a fresh project whose
+  // ROADMAP names no IDs produces no references and fires nothing.
+  const punchIds = new Set(getPunchItems().map((p) => p.id));
+  const fcIds = new Set(getFutureItems().map((f) => f.id));
+  const questionIds = new Set(topics.map((t) => `§${t.num}`));
+  const trackerOf: Record<ReferenceKind, { ids: Set<string>; doc: string }> = {
+    punch: { ids: punchIds, doc: "planning/punch-list.md" },
+    future: { ids: fcIds, doc: "planning/Future Considerations.md" },
+    question: { ids: questionIds, doc: "planning/Open Questions & Assumptions Log.md" },
+  };
+  for (const ref of getStateReferences()) {
+    const tracker = trackerOf[ref.kind];
+    if (!tracker.ids.has(ref.id)) {
+      alarm(
+        "getStateReferences",
+        ref.source,
+        `names ${ref.id}, which is not in ${tracker.doc} — the item was resolved and removed, or the ID is wrong`,
       );
     }
   }

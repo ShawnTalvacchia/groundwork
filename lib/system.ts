@@ -646,6 +646,59 @@ export function getQueuedSeeds(): QueuedSeed[] {
   return seeds;
 }
 
+/* ── Cross-references in the state docs (ROADMAP.md + CLAUDE.md) ─────
+   The two docs that describe where the project stands today both point at
+   tracker items by ID — `P04`, `FC2`, `§1`. Those pointers go stale when the
+   item they name is resolved and removed, and a stale one reads as a live
+   claim. This collects them so `lib/derivation.ts` can assert each one still
+   resolves. Prose only: frontmatter and HTML comments are already stripped by
+   readDoc, and tracker docs themselves are not scanned (a tracker naming its
+   own IDs is not a claim about current state). */
+
+export type ReferenceKind = "punch" | "future" | "question";
+
+export interface StateReference {
+  /** Doc it was found in, as a label: "ROADMAP.md" or "CLAUDE.md". */
+  source: string;
+  id: string; // "P04", "FC2", "§1"
+  kind: ReferenceKind;
+}
+
+/** CLAUDE.md lives at the project root, one level above `docs/`. */
+function readProjectRootDoc(name: string): string | null {
+  const p = path.join(path.dirname(DOCS_DIR), name);
+  if (!fs.existsSync(p)) return null;
+  const { body } = parseFrontmatter(fs.readFileSync(p, "utf-8"));
+  return body.replace(/<!--[\s\S]*?-->/g, "");
+}
+
+function collectReferences(source: string, body: string, into: StateReference[]) {
+  // `§N` only with the number attached: "§ Doc Tiers" is a section pointer
+  // inside a doc, not a tracker ID.
+  const re = /\b(P\d+\w*)\b|\b(FC\d+)\b|§(\d+)\b/g;
+  const seen = new Set<string>();
+  let m;
+  while ((m = re.exec(body))) {
+    const [id, kind]: [string, ReferenceKind] = m[1]
+      ? [m[1], "punch"]
+      : m[2]
+        ? [m[2], "future"]
+        : [`§${m[3]}`, "question"];
+    if (seen.has(id)) continue; // one alarm per dangling ID, not per mention
+    seen.add(id);
+    into.push({ source, id, kind });
+  }
+}
+
+export function getStateReferences(): StateReference[] {
+  const refs: StateReference[] = [];
+  const roadmap = readDoc("ROADMAP.md");
+  if (roadmap) collectReferences("ROADMAP.md", roadmap.body, refs);
+  const claude = readProjectRootDoc("CLAUDE.md");
+  if (claude) collectReferences("CLAUDE.md", claude, refs);
+  return refs;
+}
+
 /* ── Decisions log (decisions.md) ────────────────────────────────────
    `## YYYY-MM-DD · Title` entries (date prefix may be a range) with
    `**What:** / **Why:** / **Where:**` fields. */

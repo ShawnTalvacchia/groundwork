@@ -200,6 +200,18 @@
   border-color: var(--brand-main);
 }
 
+/* A sunken shelf holding a set of cards under a flat label — used for the
+   queue on the hubs, where the group is a unit rather than free-standing
+   peers. The label sits on the shelf, not in a card of its own. */
+.sys-shelf {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--surface-inset);
+  border-radius: var(--radius-panel);
+}
+
 /* ── Cards, rows, pills ── */
 
 .sys-card {

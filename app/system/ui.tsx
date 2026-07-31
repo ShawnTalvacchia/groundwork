@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import type { Tier } from "@/lib/system";
-import { TIER_META } from "@/lib/system";
+import type { BoardMode, Tier } from "@/lib/system";
+import { MODE_META, TIER_META } from "@/lib/system";
 import type { DriftAlarm } from "@/lib/derivation";
 
 /* Shared server-side UI for /system. Presentation only — no content. */
@@ -71,6 +71,72 @@ export function Tile({
       </span>
       {detail && <span className="text-xs text-fg-tertiary leading-snug">{detail}</span>}
     </Link>
+  );
+}
+
+/** The queue, condensed for a hub.
+ *
+ *  Replaces a tile whose entire content was a count: the rows themselves say
+ *  more in the same space. Each card links to its seed exactly as the roadmap
+ *  page's cards do, and a seedless row renders inert — that state is what the
+ *  bidirectional seed invariant flags (lib/derivation.ts), not something the
+ *  UI should paper over.
+ *
+ *  Presence-not-count, like the invariants: a fresh project has queued nothing,
+ *  and the shelf still renders so the roadmap stays one click away on day one. */
+export function QueueShelf({
+  items,
+  limit = 3,
+}: {
+  items: { name: string; mode: BoardMode | null; seedPath: string | null }[];
+  limit?: number;
+}) {
+  const shown = items.slice(0, limit);
+  const hidden = items.length - shown.length;
+  return (
+    <div className="sys-shelf">
+      <div className="flex items-baseline justify-between gap-md">
+        <span className="text-2xs font-semibold uppercase tracking-wide text-fg-tertiary">Queue</span>
+        <Link href="/system/roadmap" className="text-xs text-fg-secondary underline underline-offset-2">
+          View roadmap →
+        </Link>
+      </div>
+      {shown.length === 0 ? (
+        <p className="text-xs text-fg-tertiary">
+          Nothing queued yet — planned work lands on the roadmap before a board opens.
+        </p>
+      ) : (
+        // auto-fit, not a fixed three: the queue's length varies, and two cards
+        // holding a third of the row with a gap beside them reads as broken
+        // rather than as room to spare.
+        <div className="grid gap-sm grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
+          {shown.map((q) => {
+            const inner = (
+              <>
+                <span className="text-sm font-semibold text-fg-primary leading-snug">{q.name}</span>
+                {q.mode && <span className="sys-pill self-start">{MODE_META[q.mode].label}</span>}
+              </>
+            );
+            return q.seedPath ? (
+              <Link key={q.name} href={`/system/docs/${q.seedPath}`} className="sys-tile gap-sm">
+                {inner}
+              </Link>
+            ) : (
+              <div key={q.name} className="sys-card flex flex-col gap-sm">
+                {inner}
+              </div>
+            );
+          })}
+        </div>
+      )}
+      {/* Never truncate silently: a shelf showing 3 of 5 reads as "that's all"
+          unless it says otherwise. */}
+      {hidden > 0 && (
+        <p className="text-2xs text-fg-tertiary">
+          +{hidden} more {hidden === 1 ? "phase" : "phases"} on the roadmap
+        </p>
+      )}
+    </div>
   );
 }
 

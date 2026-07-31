@@ -10,12 +10,13 @@ import {
   getGlossary,
   getOpenQuestions,
   getPunchItems,
+  getQueuedSeeds,
   getRoadmap,
   getTrackerModel,
   getWorkModel,
   TIER_ORDER,
 } from "@/lib/system";
-import { Tile } from "./ui";
+import { QueueShelf, Tile } from "./ui";
 
 function Cluster({
   title,
@@ -58,6 +59,13 @@ export default function SystemOverview() {
   const { trackers } = getTrackerModel();
 
   const openItems = questions.reduce((n, t) => n + t.questions.length, 0);
+  // The queue, joined to its seeds — the card links to the seed, same as the
+  // roadmap page's. A row whose seed is missing links nowhere on purpose.
+  const seeds = getQueuedSeeds();
+  const queue = roadmap.phases.map((p) => {
+    const seed = seeds.find((s) => s.phase === p.name);
+    return { name: p.name, mode: seed?.mode ?? null, seedPath: seed?.relPath ?? null };
+  });
   const features = docs.filter((d) => d.featureStatus);
   const strategyDocs = docs.filter((d) => d.dir === "strategy");
   const tierCounts = TIER_ORDER.map((t) => `${docs.filter((d) => d.tier === t).length} ${t}`).join(" · ");
@@ -91,15 +99,17 @@ export default function SystemOverview() {
         icon={<Hammer size={20} weight="light" />}
         purpose="What's moving — the active board and the queues that feed it."
       >
-        {/* Hero row: the active board and the roadmap are peers here — wide
-            enough that a long board title truncates before wrapping. */}
-        <div className="grid gap-md sm:grid-cols-2">
+        {/* The board comes first and takes the full width — it is the answer to
+            "what is happening right now", and it used to share a row with a tile
+            whose whole content was a count. The queue shelf below replaced that
+            tile with the rows it was counting. */}
+        <div className={`grid gap-md ${boards.length > 1 ? "sm:grid-cols-2" : ""}`}>
           {boards.length === 0 ? (
             <Tile
               href="/system/phase"
               label="Active board"
               value="Between boards"
-              detail={`${roadmap.phases.length} phases queued`}
+              detail="no phase open — the queue below is what's next"
             />
           ) : (
             boards.map((b) => (
@@ -112,8 +122,8 @@ export default function SystemOverview() {
               />
             ))
           )}
-          <Tile href="/system/roadmap" label="Roadmap" value={roadmap.phases.length} detail="phases queued" />
         </div>
+        <QueueShelf items={queue} />
         {/* The trackers — three peers, fill the row rather than auto-fill and
             leave a gap. */}
         <div className="grid gap-md sm:grid-cols-3">
