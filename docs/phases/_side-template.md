@@ -13,6 +13,8 @@ read-when: "board close (deleted at close — the moved tracker rows + the commi
 
 **Project:** [the repo this board lives in — work outside it gets handed over, not done]
 
+**Session title:** _(`Project · mode · Phase name` — the PO's answer at open)_
+
 ## Items
 
 - [ ] P## · [one line — what the fix is]
