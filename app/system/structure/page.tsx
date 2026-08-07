@@ -68,7 +68,7 @@ export default function StructurePage() {
           href="/system/features"
           label="Features"
           value={featureDocs.length}
-          detail="What it does — the registry as a product map: the funnel, the identity backbone, the demo layer."
+          detail="What it does — one current-state spec per capability, grouped by the areas the docs declare."
         />
         <Tile
           href="/system/strategy"

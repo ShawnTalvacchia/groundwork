@@ -325,7 +325,7 @@ Tiers govern **docs**, not coding rules — hard gates (if your project defines 
 - Valid statuses: `active` (living doc), `draft` (in progress), `archived`.
 - `tier`: `bedrock | commitments | working | surface` — see "Doc Tiers & Review Physics."
 - **Strategy docs** add `summary:` — the one-line thesis rendered on `/system/strategy`.
-- **Feature docs** add: `feature-status: imagined | staged | built`, `feature-kind: product | demo` (if the project has a demo layer), `area:` (funnel/domain stage, product features only), `routes:` (comma-separated).
+- **Feature docs** add: `feature-status: imagined | staged | built`, `feature-kind: product | demo` (if the project has a demo layer), `area:` (domain area, product features only — your own word for the part of the product it belongs to; the Features page groups by whatever areas your docs declare), `routes:` (comma-separated).
 - **Boards and seeds** add `mode: product | system | side` (see "The Work Model").
 - These fields are load-bearing: `/system` renders from them (derived, never authored — `implementation/system-surface.md`). A wrong field is a wrong dashboard.
 

@@ -50,6 +50,8 @@ Every page renders from the markdown in `docs/` at build time — frontmatter, s
 
 The parsers adapt to the docs' existing formats. The formats never bend to the parsers — the identifier schemes (`P##`, `§N`, `FC##`, the mode headings) are load-bearing across docs, code comments, and memory.
 
+**The law covers vocabulary, not just values.** A page may not author the project's own words — the set of areas, their labels, their order, or a thesis about how they relate. Rendering a *value* the docs supplied is derivation; supplying the *category* it goes in is authorship, and it is the harder failure to see, because a label reads as chrome rather than as content. The Features page broke this from the beginning: its area set was hardcoded from one product's own thesis, so every project built from this template inherited that vocabulary and any feature outside it rendered nowhere at all. Where a page needs a category, it derives the category (`getFeatureAreas`) or formats the doc's own word (`areaLabel`). Section *headings* name the section, never a project's shape — this is why the roadmap's horizon section is "On the horizon."
+
 ## Shape: hub and spoke
 
 A fixed header carries the main tabs — **System** + three groups (Work · Structure · Method) as segmented pills. Each group's pages render as subtabs in the body. The header and subtab row stick as one block; the body scrolls under.
@@ -73,7 +75,7 @@ A fixed header carries the main tabs — **System** + three groups (Work · Stru
 | Punch list | `planning/punch-list.md` (the `P##` table) |
 | Future | `planning/Future Considerations.md` (`FC##` sections, Trigger/Context/Effort fields) |
 | Docs | `tier:` frontmatter across live docs + per-tier staleness heuristics (working >30d, commitments >90d) |
-| Features | `docs/features/*.md` frontmatter (`feature-status`, `feature-kind`, `area`, `routes`) |
+| Features | `docs/features/*.md` frontmatter (`feature-status`, `feature-kind`, `area`, `routes`). The area **set and labels** derive too (`getFeatureAreas` — alphabetical, title-cased); the page holds no vocabulary of its own |
 | Strategy | `docs/strategy/**` frontmatter (`summary` one-liners; grouped by tier + subfolder) |
 | Timeline | `docs/archive/phases/*.md` (walkthroughs skipped) — month-grouped, newest first |
 | Decisions | `docs/decisions.md` (`## date · title` entries, What/Why/Where) |
@@ -89,6 +91,7 @@ A fixed header carries the main tabs — **System** + three groups (Work · Stru
 **The doc formats are parser API, and format drift fails silently** — a parser handed an unexpected shape returns empty or partial, and the page renders hollow with no signal. Three defenses:
 
 - **Invariants, not zero-checks** — `lib/derivation.ts` asserts each parser's promised shape (3 modes with all fields, 4 known tiers with live thresholds, every question carrying area + resolves-when, frontmatter coverage …). Non-zero-but-wrong parses are the worst class; zero-checks alone miss them.
+- **Unrendered features** — every product feature doc must land in a bucket the Features page renders. `getFeatureAreas` derives the area set, so total coverage holds by construction; the alarm fires if a fixed vocabulary is reintroduced, because a fixed set drops the docs that fall outside it. Its limit is stated in the code — it proves no doc was dropped, not that the labels came from the docs; nothing in `lib/` can see a literal authored into a page under `app/`.
 - **Dangling references** — every tracker ID named in the two state docs (`ROADMAP.md` and the project root's `CLAUDE.md`) must still exist in its tracker: `P##` in the punch list, `FC##` in Future Considerations, `§N` in the Open Questions log. Parsed by `getStateReferences`; prose only, one alarm per dangling ID per doc. This is the one invariant that guards *content* rather than format, and it earns the exception by catching the failure format checks cannot see: a doc still describing an item as pending after the item shipped and left its tracker. `§ N` with a space is a section pointer, not an ID, and is not scanned.
 - **The surface self-reports** — any failing invariant renders an amber band on every `/system` page, naming the parser, the source doc, and the problem. **Warn, never fail:** a drifted doc format must not block a deploy.
 - **Markers at the source** — each parsed section opens with an HTML comment naming its parser, its page, and the shape that must hold.

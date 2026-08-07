@@ -91,11 +91,11 @@ export default function RoadmapPage() {
           </p>
         </section>
       )}
-      {roadmap.beyondDemo.length > 0 && (
+      {roadmap.horizon.length > 0 && (
         <section className="flex flex-col gap-sm">
-          <h2 className="text-lg font-semibold text-fg-primary">Beyond the demo</h2>
+          <h2 className="text-lg font-semibold text-fg-primary">On the horizon</h2>
           <ul className="flex flex-col gap-xs">
-            {roadmap.beyondDemo.map((b, i) => (
+            {roadmap.horizon.map((b, i) => (
               <li key={i} className="text-xs text-fg-secondary list-disc ml-lg leading-snug">
                 {b}
               </li>

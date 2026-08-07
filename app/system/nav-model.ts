@@ -34,7 +34,7 @@ export const GROUPS: SystemGroup[] = [
     label: "Structure",
     blurb: "What the project is made of — the features, the strategy, the docs, the shipped record.",
     pages: [
-      { slug: "features", label: "Features", blurb: "The registry as a product map: the funnel, the identity backbone, the demo layer." },
+      { slug: "features", label: "Features", blurb: "One current-state spec per capability, grouped by the areas the docs declare." },
       { slug: "strategy", label: "Strategy", blurb: "What we believe — settled models, drafts, interview kits, research — each with its thesis." },
       { slug: "styleguide", label: "Styleguide", blurb: "The design system's surface — colors, type, tokens, components." },
       { slug: "docs", label: "Docs", blurb: "Every live doc by review tier, with folder and freshness. Doc reading lives here too.", hidden: true },

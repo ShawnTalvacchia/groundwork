@@ -106,7 +106,7 @@ export interface SystemDoc {
   readWhen: string | null;
   featureStatus: string | null;
   featureKind: string | null; // product | demo
-  area: string | null; // funnel area: community | trust | care | shelter | identity
+  area: string | null; // domain area — the project's own vocabulary (see getFeatureAreas)
   summary: string | null; // one-line thesis from frontmatter
   routes: string[];
   /** Days past its tier's staleness heuristic; null when fresh or exempt. */
@@ -157,6 +157,59 @@ export function getAllDocs(): SystemDoc[] {
       };
     })
     .sort((a, b) => a.relPath.localeCompare(b.relPath));
+}
+
+/* ── The project's own domain vocabulary ──────────────────────────────
+   The Features page groups by AREA, and the areas are YOUR words: `area:
+   care` in a plant-care app, `area: billing` in a billing one. Both the
+   SET and the LABELS derive from your feature docs, so the page speaks
+   whatever language your docs do and you change it by editing frontmatter
+   — never this file.
+
+   This exists because it once did not. The set used to be a hardcoded
+   array carried over from one product's own thesis, so every project built
+   from this template inherited someone else's vocabulary as the fixed
+   shape of its registry, and any feature whose area was not on that list
+   rendered NOWHERE — no bucket, no empty state, no signal, while the
+   header count still counted it. Derived-never-authored is the law the
+   whole surface claims; this was the one page exempt from it.
+
+   Areas sort alphabetically ON PURPOSE. Any other order (declaration,
+   count, a doc-declared sequence) is a claim about the product's shape,
+   and asserting a shape is exactly what went wrong here. Alphabetical
+   asserts nothing. */
+
+export interface FeatureArea {
+  /** The frontmatter value, verbatim — the join key. */
+  key: string;
+  /** Display form: "front-door" → "Front Door". */
+  label: string;
+  count: number;
+}
+
+/** Title-cases an area key for display. Hyphens and underscores are word
+ *  breaks; everything else is left alone, since the value is your word and
+ *  we are formatting it, not correcting it. */
+export function areaLabel(key: string): string {
+  return key
+    .split(/[-_]+/)
+    .filter(Boolean)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+}
+
+/** The areas your feature docs actually declare, alphabetical. Demo-layer
+ *  docs are excluded: they describe the prototype's own affordances, not
+ *  the product's areas. */
+export function getFeatureAreas(): FeatureArea[] {
+  const counts = new Map<string, number>();
+  for (const d of getAllDocs()) {
+    if (d.dir !== "features" || d.featureKind === "demo" || !d.area) continue;
+    counts.set(d.area, (counts.get(d.area) ?? 0) + 1);
+  }
+  return [...counts.entries()]
+    .map(([key, count]) => ({ key, label: areaLabel(key), count }))
+    .sort((a, b) => a.label.localeCompare(b.label));
 }
 
 /** Every .md path under docs/ including the archive — used to prerender the
@@ -528,7 +581,7 @@ export function getFutureItems(): FutureItem[] {
 
 /* ── Roadmap (ROADMAP.md) ────────────────────────────────────────────
    Sections: Principles / Where We Are / What's Next (phase table) /
-   Key Considerations / Beyond the Demo. */
+   Key Considerations / On the horizon. */
 
 export interface RoadmapPhase {
   name: string;
@@ -549,7 +602,9 @@ export interface Roadmap {
   validationHorizon: string;
   runningAlongside: string[];
   keyConsiderations: KeyConsideration[];
-  beyondDemo: string[];
+  /** ROADMAP § On the horizon. Named for the section, not for any one
+   *  project's shape. */
+  horizon: string[];
 }
 
 function sectionOf(body: string, heading: string): string {
@@ -595,11 +650,11 @@ export function getRoadmap(): Roadmap {
     if (cm) considerations.push({ title: cm[1].replace(/\.$/, ""), text: cm[2].trim() });
   }
 
-  const beyondDemo = (sectionOf(body, "Beyond the Demo").match(/^- .*$/gm) ?? []).map((b) =>
+  const horizon = (sectionOf(body, "On the horizon").match(/^- .*$/gm) ?? []).map((b) =>
     stripMd(b.slice(2))
   );
 
-  return { goal, whereWeAre: where, phases, validationHorizon, runningAlongside, keyConsiderations: considerations, beyondDemo };
+  return { goal, whereWeAre: where, phases, validationHorizon, runningAlongside, keyConsiderations: considerations, horizon };
 }
 
 /* ── Seeds (planning/queued/*.md) ────────────────────────────────────

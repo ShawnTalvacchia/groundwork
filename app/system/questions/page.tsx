@@ -1,16 +1,13 @@
-import { getOpenQuestions } from "@/lib/system";
+import { areaLabel, getOpenQuestions } from "@/lib/system";
 import { MdInline, PageIntro, SourceNote } from "../ui";
 
 // Everything in the log is open — resolved questions are deleted, not marked.
 // So this page can't overcount, and a topic's count is just its entries.
-
-const AREA_LABEL: Record<string, string> = {
-  community: "Community",
-  trust: "Trust",
-  care: "Care",
-  shelter: "Shelter",
-  identity: "Identity",
-};
+//
+// Area pills are formatted, never translated: a question's area is whatever
+// word the log used, title-cased for display (`areaLabel`). A fixed label map
+// here would dress one project's vocabulary as canonical and silently pass
+// through every area it did not know.
 
 export default function QuestionsPage() {
   const topics = getOpenQuestions();
@@ -26,7 +23,7 @@ export default function QuestionsPage() {
       />
 
       <p className="text-xs text-fg-tertiary">
-        {high} high priority · {topics.length} topics · areas match the feature registry
+        {high} high priority · {topics.length} topics
       </p>
 
       {topics.map((t) => (
@@ -51,7 +48,7 @@ export default function QuestionsPage() {
               <article key={q.question} className="sys-card flex flex-col gap-sm">
                 <h3 className="text-sm font-semibold text-fg-primary">{q.question}</h3>
                 <div className="flex items-center gap-sm flex-wrap">
-                  {q.area && <span className="sys-pill">{AREA_LABEL[q.area] ?? q.area}</span>}
+                  {q.area && <span className="sys-pill">{areaLabel(q.area)}</span>}
                   {q.priority === "high" && <span className="sys-pill sys-pill-stale">high</span>}
                   {q.priority && q.priority !== "high" && (
                     <span className="text-2xs text-fg-tertiary">{q.priority} priority</span>

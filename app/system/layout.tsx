@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getDriftAlarms } from "@/lib/derivation";
+import { PROJECT_NAME } from "@/lib/project";
 import { SystemNav, SystemSubtabs } from "./nav";
 import { DriftBanner } from "./ui";
 import "./system.css";
@@ -8,8 +9,13 @@ import "./system.css";
 // hand-maintained (docs/implementation/system-surface.md). Noindexed, and
 // absent from the product nav.
 
+// The project's name leads the tab title, because the tab is read against
+// OTHER projects' tabs — several of these open at once all reading "System"
+// are told apart only by clicking. Name first survives truncation, which
+// trims the end. lib/project.ts is the one home; this uses it rather than
+// overriding it with a constant.
 export const metadata: Metadata = {
-  title: "System",
+  title: `${PROJECT_NAME} · System`,
   robots: { index: false, follow: false },
 };
 

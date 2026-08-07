@@ -2,6 +2,7 @@ import {
   getAllDocs,
   getArchivedPhases,
   getDecisions,
+  getFeatureAreas,
   getFutureItems,
   getGlossary,
   getOpenQuestions,
@@ -232,6 +233,39 @@ export function getDriftAlarms(): DriftAlarm[] {
     "strategy doc missing summary",
     docs.filter((d) => d.dir === "strategy" && !d.summary).map((d) => d.relPath),
   );
+
+  /* ── The surface speaks the project's language ───────────────────── */
+
+  // Every product feature must land in a bucket the Features page renders.
+  // A content invariant rather than a format one, and it earns that the same
+  // way dangling references do: the failure is a page that parses perfectly
+  // and shows the wrong thing — a doc that exists, counts toward the header,
+  // and appears nowhere on the page under it.
+  //
+  // That is not hypothetical. The area SET was once hardcoded to one
+  // product's own vocabulary, so any feature outside that list rendered
+  // nowhere, invisible from inside the project that shipped it. The set now
+  // derives (`getFeatureAreas`), which makes total coverage true by
+  // construction — so this fires only if someone reintroduces a fixed
+  // vocabulary. That is exactly the recurrence it is here to catch.
+  //
+  // The honest limit, stated because the file states its others: this checks
+  // that no doc is dropped, not that the labels came from the docs. Nothing
+  // in lib/ can see a literal authored into a page under app/. What it does
+  // guarantee is that a hardcoded set cannot stay silent — it drops docs, and
+  // dropped docs alarm here.
+  const areaKeys = new Set(getFeatureAreas().map((a) => a.key));
+  const dropped = docs
+    .filter((d) => d.dir === "features" && d.featureKind !== "demo")
+    .filter((d) => d.area && !areaKeys.has(d.area))
+    .map((d) => `${d.relPath} (area: ${d.area})`);
+  if (dropped.length) {
+    alarm(
+      "getFeatureAreas",
+      "docs/features/ frontmatter",
+      `${dropped.length} feature doc(s) render in no area bucket — the page's vocabulary is not the docs': ${dropped.join(", ")}`,
+    );
+  }
 
   /* ── globals.css (the styleguide's source) ───────────────────────── */
 
