@@ -213,7 +213,11 @@ export function getStyleguide(): StyleguideData {
 
 const SCAN_DIRS = ["app", "components", "lib", "contexts", "hooks"];
 const EXCLUDE = [
+  // Both styleguide homes: this repo mounts the dashboard at app/[surface],
+  // the template at app/system. Each repo has exactly one of the two, and the
+  // other entry matches nothing — cheaper than re-rendering on export.
   path.join("app", "system", "styleguide"),
+  path.join("app", "[surface]", "styleguide"),
   path.join("lib", "styleguide.ts"), // this parser's own regexes aren't usage
   path.join("lib", "system.ts"),
 ];
@@ -374,4 +378,152 @@ export function getComponentInventory(): ComponentGroup[] {
     groups.push({ dir, components });
   }
   return groups;
+}
+
+/* ── Component details (derived from each component's own source) ──────
+   The component file is the truth about the component: its docblock is the
+   why (the convention in component-patterns.md), its variant maps are the
+   range, its callsites are the census. Parsed here so the inspector and the
+   styleguide derive rather than author — same law as the token parse above.
+   Every field is best-effort: a component the heuristics can't read gets
+   nulls and empty lists, never an error. */
+
+export interface ComponentVariant {
+  /** The map constant's name, e.g. "TONES" — a hint at the prop it backs. */
+  map: string;
+  name: string; // "brand"
+  classes: string; // "bg-brand-subtle text-brand-strong"
+}
+
+export interface ComponentDetail extends ComponentEntry {
+  /** The leading doc comment, flattened to one string. Null = not written. */
+  docblock: string | null;
+  /** Static class tokens identifying the root element — lets the inspector
+   *  recognize SERVER components, which never appear in the client fiber
+   *  tree. Heuristic: the longest static run (≥3 tokens) across the file's
+   *  class strings, after resolving string constants imported from same-dir
+   *  style modules (the buttonStyles.ts pattern). */
+  signature: string[] | null;
+  /** Lowercased root element tags this component renders (`<Link>` counts
+   *  as "a"). Disambiguates components sharing one skin: Button and
+   *  LinkButton wear the same base classes on different tags. */
+  rootTags: string[];
+  variants: ComponentVariant[];
+  /** Callsites outside the component's own file and the styleguide demos. */
+  usage: { count: number; files: string[] };
+}
+
+/** String constants and Record<...> variant maps from one source file.
+ *  Constants holding template expressions are skipped — only fully static
+ *  strings can serve as substitution values. */
+function parseStyleSource(raw: string): { consts: Map<string, string>; maps: ComponentVariant[] } {
+  const consts = new Map<string, string>();
+  for (const m of raw.matchAll(/(?:export\s+)?const\s+(\w+)\s*=\s*["'`]([^"'`]+)["'`]/g)) {
+    if (!m[2].includes("${")) consts.set(m[1], m[2]);
+  }
+  const maps: ComponentVariant[] = [];
+  for (const m of raw.matchAll(/(?:export\s+)?const\s+(\w+)\s*:\s*Record<[^>]+>\s*=\s*\{([\s\S]*?)\};/g)) {
+    for (const e of m[2].matchAll(/(\w+):\s*"([^"]+)"/g)) {
+      maps.push({ map: m[1], name: e[1], classes: e[2] });
+    }
+  }
+  return { consts, maps };
+}
+
+let detailCache: ComponentDetail[] | null = null;
+
+export function getComponentDetails(): ComponentDetail[] {
+  if (detailCache) return detailCache;
+  const inventory = getComponentInventory().flatMap((g) => g.components);
+  const scanned = scanFiles(); // comment-stripped: right for the census
+  const moduleCache = new Map<string, { consts: Map<string, string>; maps: ComponentVariant[] }>();
+
+  detailCache = inventory.map((c) => {
+    const raw = fs.readFileSync(path.join(process.cwd(), c.file), "utf-8");
+
+    const db = raw.match(/\/\*\*([\s\S]*?)\*\//);
+    const docblock = db
+      ? db[1]
+          .split("\n")
+          .map((l) => l.replace(/^\s*\*?\s?/, ""))
+          .join(" ")
+          .replace(/\s+/g, " ")
+          .trim() || null
+      : null;
+
+    // The component's own constants plus those of same-dir modules it
+    // imports (`./buttonStyles`) — the shared-skin pattern.
+    const own = parseStyleSource(raw);
+    const consts = new Map(own.consts);
+    const maps = [...own.maps];
+    for (const im of raw.matchAll(/from\s+["']\.\/(\w+)["']/g)) {
+      const modPath = path.join(path.dirname(c.file), `${im[1]}.ts`);
+      if (!moduleCache.has(modPath)) {
+        const full = path.join(process.cwd(), modPath);
+        moduleCache.set(
+          modPath,
+          fs.existsSync(full)
+            ? parseStyleSource(fs.readFileSync(full, "utf-8"))
+            : { consts: new Map(), maps: [] }
+        );
+      }
+      const mod = moduleCache.get(modPath)!;
+      for (const [k, v] of mod.consts) consts.set(k, v);
+      maps.push(...mod.maps);
+    }
+
+    // Signature: every class-ish string in the file — className attributes
+    // AND template literals assigned to variables (LinkButton builds its
+    // `classes` string outside the JSX). Resolvable ${CONST} refs are
+    // substituted; unresolvable ones become hard segment breaks (a NUL
+    // escape, so they cannot merge neighbors the way a space would). A
+    // segment only counts when most tokens carry a hyphen or colon, so a
+    // prose template literal can never become a signature.
+    const BREAK = "\u0000";
+    const expand = (tpl: string) =>
+      tpl
+        .replace(/\$\{(\w+)\}/g, (_, n: string) => consts.get(n) ?? BREAK)
+        .replace(/\$\{[^}]*\}/g, BREAK);
+    const classy = (tokens: string[]) =>
+      tokens.filter((t) => t.includes("-") || t.includes(":")).length >= tokens.length * 0.6;
+    let signature: string[] | null = null;
+    const candidates = [
+      ...[...raw.matchAll(/className="([^"]+)"/g)].map((m) => m[1]),
+      ...[...raw.matchAll(/`([^`]+)`/g)].map((m) => m[1]),
+    ];
+    for (const cand of candidates) {
+      for (const segment of expand(cand).split(BREAK)) {
+        const tokens = segment.trim().split(/\s+/).filter(Boolean);
+        if (tokens.length >= 3 && classy(tokens) && tokens.length > (signature?.length ?? 0)) {
+          signature = tokens;
+        }
+      }
+    }
+
+    const rootTags = [
+      ...new Set(
+        [...raw.matchAll(/return\s*\(?\s*<(\w+)/g)]
+          .map((m) => (m[1] === "Link" ? "a" : m[1]))
+          .filter((t) => /^[a-z]/.test(t))
+      ),
+    ];
+
+    // Only variant maps the component actually references are its variants.
+    const variants = maps.filter((v) => raw.includes(v.map));
+
+    const use = new RegExp(`<${c.name}[\\s/>]`, "g");
+    let count = 0;
+    const files: string[] = [];
+    for (const f of scanned) {
+      if (f.file === c.file) continue;
+      const hits = f.text.match(use)?.length ?? 0;
+      if (hits > 0) {
+        count += hits;
+        files.push(f.file);
+      }
+    }
+
+    return { ...c, docblock, signature, rootTags, variants, usage: { count, files: files.sort() } };
+  });
+  return detailCache;
 }

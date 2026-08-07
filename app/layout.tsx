@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeWatcher } from "@/components/ui/ThemeWatcher";
+import { InspectorGate } from "@/components/inspector/InspectorGate";
 import { PROJECT_NAME, PROJECT_DESCRIPTION } from "@/lib/project";
 
 /**
@@ -27,6 +28,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         {/* App-global: keeps the `system` theme preference following the OS live. */}
         <ThemeWatcher />
+        {/* App-global: the element inspector's entry gate. Renders nothing and
+            loads nothing until the URL carries ?inspect (opt-in by constraint). */}
+        <InspectorGate />
         {children}
       </body>
     </html>
