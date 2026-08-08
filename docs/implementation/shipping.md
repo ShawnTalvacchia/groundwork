@@ -36,6 +36,8 @@ The other half of the identity, set in the same kickoff session (`KICKOFF.md` �
 
 Change the shape in one, change it in all three. Only the **colour** needs a per-renderer mechanism: `Mark.tsx` reads `var(--brand-main)` and follows your re-skin automatically, while the other two carry the value as a literal.
 
+The favicon's literal is a **lighter** step on the ramp than the other two, on purpose. It is the one renderer whose backdrop you do not control — browser chrome is dark for a lot of people — and the starter's brand colour measures 2.04:1 against a dark tab strip, under the 3:1 non-text minimum. A step lighter clears 3:1 in both directions. Worth re-checking against your own palette when you swap the mark in.
+
 The starter's centre is a real cutout — one path with `fill-rule="evenodd"`, so nothing paints the middle and whatever sits behind the mark shows through. Worth keeping in your own shape: a painted centre has to know what is behind it, and every new callsite is a chance to get that backwards.
 
 **No mark on day one is a fine answer.** Defer it as a Future Consideration with a trigger you choose, so it stays owned instead of forgotten.
