@@ -91,7 +91,7 @@ export function Tile({
 export function StartersStrip({
   starters,
 }: {
-  starters: { arriving: string; shape: string; prompt: string; openBy: string }[];
+  starters: { arriving: string; shape: string; mode: string; prompt: string; openBy: string }[];
 }) {
   if (starters.length === 0) return null;
   return (
@@ -123,7 +123,14 @@ export function StartersStrip({
               <span aria-hidden className="text-fg-light">
                 →
               </span>
-              <span className="text-xs font-semibold text-fg-primary md:whitespace-nowrap">{s.shape}</span>
+              {/* Shape as a pill, mode beside it — same pairing the method
+                  page uses, so the two surfaces name a session identically. */}
+              <span className="flex items-baseline gap-sm">
+                <span className="sys-pill">{s.shape}</span>
+                <span className="text-2xs uppercase tracking-wide text-fg-tertiary">
+                  <MdInline text={s.mode} />
+                </span>
+              </span>
             </summary>
             <div className="flex flex-col gap-xs pb-md pl-lg max-w-[72ch]">
               <p className="text-xs italic text-fg-primary leading-snug">

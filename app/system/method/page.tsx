@@ -83,38 +83,19 @@ export default function MethodPage() {
         ))}
       </section>
 
-      {/* Session starters — the front door: what you're arriving with, the
-          shape that fits, and literally what to say. First because it is the
-          first question a new session actually has. */}
-      {starters.length > 0 && (
-        <section className="flex flex-col gap-md">
-          <h2 className="text-lg font-semibold text-fg-primary">Session starters</h2>
+      {/* How a session begins, in a sentence. The rows it introduces sit
+          further down: terms first, then how those terms get used. */}
+      {startersLede && (
+        <section className="flex flex-col gap-sm">
           <p className="text-sm text-fg-secondary max-w-[64ch]">
             <MdInline text={startersLede} />
           </p>
-          <div className="flex flex-col gap-sm">
-            {starters.map((s) => (
-              <div key={s.arriving} className="sys-part grid gap-sm md:grid-cols-[1.1fr_auto_1.6fr] md:items-baseline">
-                <span className="text-sm font-semibold text-fg-primary leading-snug">
-                  <MdInline text={s.arriving} />
-                </span>
-                <span className="flex items-baseline gap-sm md:justify-self-start">
-                  <span className="sys-pill">{s.shape}</span>
-                  <span className="text-2xs uppercase tracking-wide text-fg-tertiary">
-                    <MdInline text={s.mode} />
-                  </span>
-                </span>
-                <span className="flex flex-col gap-xs">
-                  <span className="text-xs italic text-fg-primary leading-snug">
-                    <MdInline text={s.prompt} />
-                  </span>
-                  <span className="text-xs text-fg-secondary leading-snug">
-                    <MdInline text={s.openBy} />
-                  </span>
-                </span>
-              </div>
-            ))}
-          </div>
+          <a
+            href="#session-starters"
+            className="self-start text-xs text-fg-secondary underline underline-offset-2"
+          >
+            Session starters ↓
+          </a>
         </section>
       )}
 
@@ -140,6 +121,38 @@ export default function MethodPage() {
                   </span>
                 </div>
               </article>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Session starters — the front door, sitting after the parts because
+          it uses their vocabulary: shape, mode, kind. Each row carries the
+          prompt you'd actually type. */}
+      {starters.length > 0 && (
+        <section id="session-starters" className="flex flex-col gap-md scroll-mt-2xl">
+          <h2 className="text-lg font-semibold text-fg-primary">Session starters</h2>
+          <div className="flex flex-col gap-sm">
+            {starters.map((s) => (
+              <div key={s.arriving} className="sys-part grid gap-sm md:grid-cols-[1.1fr_auto_1.6fr] md:items-baseline">
+                <span className="text-sm font-semibold text-fg-primary leading-snug">
+                  <MdInline text={s.arriving} />
+                </span>
+                <span className="flex items-baseline gap-sm md:justify-self-start">
+                  <span className="sys-pill">{s.shape}</span>
+                  <span className="text-2xs uppercase tracking-wide text-fg-tertiary">
+                    <MdInline text={s.mode} />
+                  </span>
+                </span>
+                <span className="flex flex-col gap-xs">
+                  <span className="text-xs italic text-fg-primary leading-snug">
+                    <MdInline text={s.prompt} />
+                  </span>
+                  <span className="text-xs text-fg-secondary leading-snug">
+                    <MdInline text={s.openBy} />
+                  </span>
+                </span>
+              </div>
             ))}
           </div>
         </section>
