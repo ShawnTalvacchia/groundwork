@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { Mark } from "@/components/ui/Mark";
 import { PROJECT_NAME } from "@/lib/project";
 import { GROUPS, groupForPath } from "./nav-model";
 
@@ -21,9 +22,13 @@ export function SystemNav() {
         <div className="sys-header">
           {/* The wordmark is the way out to the app, so it carries the PROJECT's
               name (lib/project.ts) — not "System", which is already the first
-              main tab below. Swap the ◆ for your own logo when you have one. */}
+              main tab below. Both halves of the identity are the kickoff's:
+              the name from lib/project.ts, the mark from components/ui/Mark.tsx. */}
           <Link href="/" className="sys-header-brand" aria-label={`${PROJECT_NAME} home`}>
-            <span className="sys-header-logo">◆ {PROJECT_NAME}</span>
+            <span className="sys-header-logo">
+              <Mark size={18} />
+              {PROJECT_NAME}
+            </span>
           </Link>
           <ThemeToggle />
         </div>

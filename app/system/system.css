@@ -66,10 +66,11 @@
   text-decoration: none;
 }
 
-/* Text wordmark in the header brand slot (swap for an <img> logo). */
+/* Mark + name in the header brand slot. The mark is components/ui/Mark.tsx. */
 .sys-header-logo {
   display: inline-flex;
   align-items: center;
+  gap: var(--space-2);
   height: 28px;
   font-family: var(--font-heading), sans-serif;
   font-size: var(--text-lg);

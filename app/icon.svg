@@ -1,6 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
-  <!-- Starter mark: the ◆ from the /system wordmark. Replace with your own
-       (see the punch list). Indigo reads on both light and dark browser tabs. -->
-  <rect width="32" height="32" rx="7" fill="#4338ca"/>
-  <path d="M16 7.5 24.5 16 16 24.5 7.5 16Z" fill="#ffffff"/>
+  <!-- Starter mark: the same shape as the /system wordmark. The kickoff is
+       where this becomes yours (KICKOFF.md → "Make the identity yours").
+
+       Same path data as components/ui/Mark.tsx. This file is standalone
+       because a favicon has no stylesheet to inherit from, so the brand
+       colour is inlined here rather than read from app/globals.css.
+
+       The centre is a REAL cutout: tile and diamond are one path with
+       fill-rule="evenodd", so the centre is unpainted and the browser's tab
+       strip shows through it. Nothing to get backwards on a dark tab. -->
+  <path
+    d="M7 0H25A7 7 0 0 1 32 7V25A7 7 0 0 1 25 32H7A7 7 0 0 1 0 25V7A7 7 0 0 1 7 0Z M16 7.5L24.5 16L16 24.5L7.5 16Z"
+    fill-rule="evenodd"
+    fill="#4338ca"
+  />
 </svg>

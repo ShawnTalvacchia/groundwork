@@ -6,6 +6,9 @@
  *   - the /system header wordmark           (app/system/nav.tsx)
  *   - the generated link-preview image      (app/opengraph-image.tsx)
  *
+ * The name is half of the identity; the mark is the other half, and its one
+ * home is components/ui/Mark.tsx. Both are the kickoff's to set.
+ *
  * Why a constant and not a parsed doc: the derived-never-authored law governs
  * the /system *content* pages, which render from `docs/`. Chrome and branding
  * aren't doc content, and parsing a display name out of prose would be fragile.

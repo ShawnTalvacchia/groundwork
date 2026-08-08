@@ -34,6 +34,8 @@ docs/
     shipping.md               naming, hosting, the gate, and renaming later
 app/, components/, lib/        the live /system dashboard — Next.js + the doc parsers
 app/globals.css                the starter design system (edit these tokens to re-skin)
+components/ui/Mark.tsx         the starter mark — one home for the shape, set at kickoff
+lib/project.ts                 the project's name + description, set at kickoff
 package.json, *.config.*       the web host (Next.js, Tailwind v4)
 ```
 
@@ -69,9 +71,15 @@ The kickoff is the **bootstrap** — the one-time phase that runs *before* the t
 
    If you're still shaping the system and have no live pages to show, **local-only is a legitimate answer** — record it in `decisions.md` with what would change your mind, and revisit at first deploy. Nothing here has to be wired today. The gate fails closed in production, so a deploy can't quietly publish the record while this is still undecided.
 
-6. **Re-skin** (web projects) — edit the tokens in `app/globals.css`; the styleguide re-derives on the next build. Token *names* are load-bearing (the dashboard's utilities come from them); token *values* are yours.
+6. **Make the identity yours** (web projects) — the design system, then the mark. In that order, because the mark takes its colour from the tokens.
 
-   The starter favicon (`app/icon.svg`) and link preview (`app/opengraph-image.tsx`) pick up the new name automatically — they're generic, not broken, so replacing them with real artwork is punch-list work, not kickoff work.
+   **Tokens.** Edit `app/globals.css`; the styleguide re-derives on the next build. Token *names* are load-bearing (the dashboard's utilities come from them); token *values* are yours.
+
+   **The mark.** `components/ui/Mark.tsx` is the one home for the shape, the way `lib/project.ts` is the one home for the name. Swap the path data there and the `/system` wordmark follows. Two more renderers carry the same shape because neither can read your stylesheet: `app/icon.svg` (a favicon has no CSS to inherit) and `app/opengraph-image.tsx` (Satori renders outside CSS entirely). One shape, three files — `Mark.tsx`'s docblock says why, and why its centre is a real cutout rather than a painted one.
+
+   The starter reads `--brand-main`, so it already stops looking like the template the moment you re-skin, before you touch the shape at all.
+
+   **No mark yet? Defer it deliberately, not silently.** A kickoff must never stall waiting on a designer, and "generic placeholder" is a legitimate answer on day one. Write a Future Consideration in your own words with your own trigger — "the first time someone outside the project sees a link preview," say — and move on. The one thing not to do is leave it unowned: the trigger you name is what brings it back.
 7. **Set the ROADMAP** — the Goal line, Where We Are, and queue your **first product phase** with a one-line thesis + a seed in `planning/queued/`.
 8. **Log the kickoff decisions** in `decisions.md` (the stack choice, the vision as first drafted).
 9. **Close the kickoff** with the verification handoff (present the filled shelf for a read), then work the board's close items — they replace the README with your project's own and **delete this file** — and open your first product phase from the roadmap.

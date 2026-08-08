@@ -28,5 +28,3 @@ Running list of small fixes (≤30 min) that live alongside whatever phase is ac
 
 | ID | Description | Category | Area | Refs | Added |
 |----|-------------|----------|------|------|-------|
-| P01 | Replace the starter favicon (the ◆ placeholder) with the project's real mark. | design | branding | `app/icon.svg` | kickoff |
-| P02 | Replace the generated link-preview image with real artwork once there's a visual identity. | design | branding | `app/opengraph-image.tsx` | kickoff |

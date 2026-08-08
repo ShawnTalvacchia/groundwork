@@ -8,7 +8,7 @@ read-when: "naming the project, deciding where the record lives, first deploy, o
 
 # Shipping: identity, hosting, and the record
 
-Two things every project settles that live outside the app's code: what it's **called**, and where its **record** lives. The kickoff decides both. This doc is the reference they point at, and it outlives the kickoff because renames happen later.
+Two things every project settles that live outside the app's code: what it **looks like as an identity** — the name and the mark — and where its **record** lives. The kickoff decides both. This doc is the reference they point at, and it outlives the kickoff because renames and re-skins happen later.
 
 ## Where your project's name lives
 
@@ -23,6 +23,22 @@ The kickoff sets these together. Setting only the first is the common mistake: t
 | **Deploy project** | your host's dashboard | The deployed URL |
 
 One edit to `lib/project.ts` covers every in-app surface. The other four rows are each their own place. That is the whole trick: the app boundary is not the identity boundary.
+
+## Where your project's mark lives
+
+The other half of the identity, set in the same kickoff session (`KICKOFF.md` → "Make the identity yours"). Three files, one shape.
+
+| Surface | Where | Why it's its own file |
+|---|---|---|
+| **The mark** | `components/ui/Mark.tsx` | The one home. Everything inside the app renders this |
+| **Favicon** | `app/icon.svg` | Served outside the CSS pipeline, so it inherits no stylesheet |
+| **Link preview** | `app/opengraph-image.tsx` | Rendered through Satori, which has no CSS at all |
+
+Change the shape in one, change it in all three. Only the **colour** needs a per-renderer mechanism: `Mark.tsx` reads `var(--brand-main)` and follows your re-skin automatically, while the other two carry the value as a literal.
+
+The starter's centre is a real cutout — one path with `fill-rule="evenodd"`, so nothing paints the middle and whatever sits behind the mark shows through. Worth keeping in your own shape: a painted centre has to know what is behind it, and every new callsite is a chance to get that backwards.
+
+**No mark on day one is a fine answer.** Defer it as a Future Consideration with a trigger you choose, so it stays owned instead of forgotten.
 
 ## Renaming later
 

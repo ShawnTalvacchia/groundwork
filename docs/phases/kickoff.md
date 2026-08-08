@@ -20,7 +20,7 @@ read-when: "the first board — work it before anything else; deleted at close, 
 - [ ] **Choose the stack** — fill CLAUDE.md's `## Stack` + `## Design & Code Conventions` blocks.
 - [ ] **Name the project, everywhere** — `lib/project.ts` covers every in-app surface in one edit; `package.json`, the git repo, the folder, and the deploy project are each their own. Set them together (`implementation/shipping.md`).
 - [ ] **Decide where the record lives — or defer, deliberately** — one gated deployment · two deployments · local-only. Tradeoffs in `implementation/shipping.md`; the choice (including "not yet") goes in `decisions.md`.
-- [ ] **Make the design system yours** (web projects) — re-skin the tokens in `app/globals.css`; the styleguide re-derives on the next build. Token *names* are load-bearing; *values* are yours.
+- [ ] **Make the identity yours** (web projects) — re-skin the tokens in `app/globals.css`, then the mark in `components/ui/Mark.tsx` (`app/icon.svg` and `app/opengraph-image.tsx` carry the same shape; neither can read a stylesheet). Token *names* are load-bearing; *values* are yours. No mark yet? Defer it as a Future Consideration with your own trigger — deliberately, not as an unowned placeholder.
 - [ ] **Set the ROADMAP + queue the first product phase** — the Goal line, Where We Are, and one queued row with a one-line thesis and a seed in `planning/queued/`.
 - [ ] **Log the kickoff decisions** in `decisions.md` (the stack choice, the vision as first drafted).
 
