@@ -16,7 +16,7 @@ import {
   getWorkModel,
   TIER_ORDER,
 } from "@/lib/system";
-import { QueueShelf, Tile } from "./ui";
+import { QueueShelf, StartersStrip, Tile } from "./ui";
 
 function Cluster({
   title,
@@ -55,7 +55,7 @@ export default function SystemOverview() {
   const boards = getActiveBoards();
   const archived = getArchivedPhases();
   const glossary = getGlossary();
-  const { modes } = getWorkModel();
+  const { modes, starters } = getWorkModel();
   const { trackers } = getTrackerModel();
 
   const openItems = questions.reduce((n, t) => n + t.questions.length, 0);
@@ -99,6 +99,10 @@ export default function SystemOverview() {
         icon={<Hammer size={20} weight="light" />}
         purpose="What's moving — the active board and the queues that feed it."
       >
+        {/* The front door, folded shut: a new session's first question is
+            "what is this session?", so it sits above the board it would open.
+            Collapsed by default — one line until someone is actually asking. */}
+        <StartersStrip starters={starters} />
         {/* The board comes first and takes the full width — it is the answer to
             "what is happening right now", and it used to share a row with a tile
             whose whole content was a count. The queue shelf below replaced that

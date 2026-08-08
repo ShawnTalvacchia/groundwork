@@ -9,7 +9,7 @@ read-when: "while this system phase is open (deleted at close — decisions.md c
 
 # System Work — [name] (ACTIVE)
 
-**Mode: system.** Opening/closing ritual in `CONTRIBUTING.md` → Mode 2. Sized to the friction — a few lines for a small fix, workstreams for a build. Deleted at close (a build-scale phase leaves a compact record in `archive/phases/`).
+**Mode: system.** Opening/closing ritual in `CONTRIBUTING.md` → The system phase. Sized to the friction — a few lines for a small fix, workstreams for a build. Deleted at close (a build-scale phase leaves a compact record in `archive/phases/`).
 
 ## Session open — YYYY-MM-DD
 

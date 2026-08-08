@@ -16,7 +16,7 @@ Rules for humans and agents working in this repo. Read before building. This is 
 ## The Work Model — every phase runs in one of three modes
 
 <!-- PARSED by lib/system.ts (getWorkModel) -> /system/method + the hub. Changing this section's SHAPE
-     (the three '### Mode N · Name — tagline' headings, the bold 'Purpose/Home ground/Careful/Gated/During' labels, the numbered ritual lists) breaks that page silently - the /system drift banner will name it.
+     (the three '### The <product|system|side> phase — tagline' headings, the bold 'Purpose/Home ground/Careful/Gated/During' labels, the numbered ritual lists, the 'Session starters' table, the '#### <Part>' blocks under '### The parts' carrying bold 'Is/Properties' fields, and the 'Adjustments' arrow bullets) breaks that page silently - the /system drift banner will name it.
      Check /system after editing. Spec: docs/implementation/system-surface.md -->
 
 **A phase is any chunk of work run through the rituals; its mode — product · system · side — sets the ritual's weight and focus.** A phase lives as a board while open, and one phase per session (chat) is the strong default, not a law — a phase survives a force-ended chat. The mode answers three questions: where the work comes from, what it reads to orient, and what it's comfortable editing. Can't name the mode? Stop and decide before touching anything — no phase is ritual-free.
@@ -24,7 +24,7 @@ Rules for humans and agents working in this repo. Read before building. This is 
 **Rules shared by all modes:**
 
 - **Phase = board while open.** A phase opens its board from its mode's template (`_product-template.md` · `_system-template.md` · `_side-template.md`) and closes it in the same arc — usually the same sitting. Boards are always `tier: working` while open; at close they are **distilled and deleted** — extraction first (decisions → `decisions.md`, behavior → feature docs, tracker rows moved), then the file goes; git history is the deep record. Product phases additionally leave a compact record for the timeline.
-- **No canon change lands unratified — the canon diff.** Before a board is deleted, the phase gathers every change it made to bedrock- and commitments-tier docs (CLAUDE.md included) and walks the PO through it, hunk by hunk — the doc-tier analog of the walkthrough. It runs inside Mode 2/3's verification handoff, and as its own step before Mode 1's distill-and-delete. Most hunks are quick confirms of calls the PO already drove; the step exists to catch what nobody decided. "None" is a valid answer for a phase that touched no tiered doc.
+- **No canon change lands unratified — the canon diff.** Before a board is deleted, the phase gathers every change it made to bedrock- and commitments-tier docs (CLAUDE.md included) and walks the PO through it, hunk by hunk — the doc-tier analog of the walkthrough. It runs inside the system and side phases' verification handoff, and as its own step before the product phase's distill-and-delete. Most hunks are quick confirms of calls the PO already drove; the step exists to catch what nobody decided. "None" is a valid answer for a phase that touched no tiered doc.
 - **The queue is the ROADMAP's What's Next — upcoming planned work of any mode, one mode-tagged list.** Every queued row carries a **seed** (`planning/queued/`, badged by its `mode:`) accumulating context until the phase opens. The queue is a staging area, never a gate: something serious can skip it — write the board and kick off directly.
 - **Every phase maintains its own footprint in the queue — nobody maintains anyone else's.** At open, a phase removes its own row and deletes its seed, whatever its mode: the queue is future-only, and the open board is that phase's pointer, so a row left behind double-counts. At close, the phase writes the rows its own work created — row and seed together, always, because the match between them is a build-time invariant. Shaping the queue at any other time — adding work nobody is doing, reordering, dropping a row the project outgrew — is **queue-shaping**, a system-phase kind (§ Queue-shaping). An unowned queue rots; this is who owns it.
 - **Trackers hold candidates, not queued work.** A tracker note that bloats, or a cluster of connected notes, promotes into a phase — the rows leave the trackers and the board gets a cohesive chunk. Tracker work needed sooner than later gets a seed and/or a board, depending on how soon it'll be picked up.
@@ -32,14 +32,30 @@ Rules for humans and agents working in this repo. Read before building. This is 
 - **Concurrency — one open board per mode.** One product and (when needed) one system board may be open simultaneously; never two boards of the same mode. Side phases run alongside either.
 - **A change that makes an open walkthrough item — or any ROADMAP claim about where the project currently stands — inaccurate fixes it in the same edit, whoever made the change.** The rule binds the phase *making* the change, not the phase that owns the walkthrough or the compass, so it reaches across concurrent boards and across modes. Never defer it: a note on your board is deleted at your close, and the stale text outlives it. **Every mode may make this correction, including where the text is otherwise gated ground** — repointing a line your own work invalidated is mechanical, and the alternative is a rule nobody is permitted to obey. Re-orienting the compass's *direction* is not covered and stays where it was. (Detail: § During a Phase.)
 - **A phase belongs to one project — the repo its board lives in.** The board names that repo at open, and everything outside it is out of bounds for every mode: no edits, no commits, no "while I'm here." A sibling project's problem gets written down and handed to a session running *in* that project; re-scoping takes a new session there, not a note here.
-- **One phase per session is the default; a session that legitimately runs several still gives each its own board.** Succession is fine — close one, open the next. What isn't fine is reactive work with no board at all. A fix small enough not to earn a board is a punch item (≤30 min, any mode), swept later.
+- **One phase per session is the default — and no board, no pen.** A session that legitimately runs several phases still gives each its own board; succession is fine — close one, open the next. A session that only reads or talks needs no phase at all — but the first edit is the line: before touching code or docs, stop, name the shape that fits (§ Session starters), and open its board. Filing a tracker row stays free — capture between phases is what trackers are for. A fix small enough not to earn a board is a punch item (≤30 min, any mode), swept later.
 - **The session is named at board open, and the board records the title.** A session cannot read or rename itself, so right after the board is created — the phase name is known by then — ask the PO to rename the chat to `Project · mode · Phase name`: yes, renamed · no, I named it: [title] · skip. Whatever the answer, the board's open section records the session title. Session identity lives in the harness, not in git; the board's line is the only place the record can say which chat ran the phase.
+- **Session end commits the board.** A session that ends mid-phase — deliberately or with the chat force-closed — commits the open board as it stands, code ready or not. A board is a doc: committing it is mode-pure and costs nothing, and it is the difference between a phase that survives its chat and work that strands. A session that finds stranded work commits the board before anything else.
+- **Push is the publish trigger.** The deploy rebuilds the record from every push, so pushing *is* publishing where things stand. The smallest push worth naming is the **status push**: commit the record alone — board, trackers, compass — and push. One gesture that puts the state of the work on the record without shipping half-finished code. Session end's board commit is its natural companion.
 - **Commits are mode-pure.** A commit serves exactly one board and names it in the message. Never mix product and system changes in one commit.
-- Boards work the main working tree — parallelism is *between* phases, not within one. (Spawned side tasks are the exception: they run in worktrees, per Mode 3.)
+- Boards work the main working tree — parallelism is *between* phases, not within one. (Spawned side tasks are the exception: they run in worktrees, per the side phase.)
 - **Routing ("where does this go?"):** ≤30 min isolated fix → punch list, swept later · focused work, no strategy → side phase · structural thesis or cross-surface coupling → product phase · workflow/doc/dashboard work → system phase · strategic and unresolved → Open Questions · known direction, no trigger yet → Future Considerations.
 - The active board(s) render live at `/system` (Work → Active board), badged by mode.
 
-### Mode 1 · Product — building the product
+### Session starters — the front door
+
+Every session starts with someone arriving with something. Match what you're holding to a row: some shapes are modes, some are kinds within one, and one isn't a phase at all. The prompt is literally how you'd open the chat — lead with the shape's name so the session starts in the right rituals. No vocabulary yet? Describing what you're holding is enough; the first edit forces the naming anyway (see the shared rules).
+
+| You're arriving with | The shape | Mode | Example prompt | What happens |
+|---|---|---|---|---|
+| The next queued thing, ready to build | Phase from the queue | the seed's `mode:` | "Open [phase name] from the queue." | Any mode can wait in the queue — the seed names it. The seed folds into the board, row and seed leave the queue, and the phase gets this session to itself. |
+| A new idea nobody is doing yet | Queue-shaping | system | "Queue-shaping: I keep hitting X and there's no row for it." | A system-phase kind. Shape rows + seeds for phases of any mode — product builds, sweeps, research alike (§ Queue-shaping). It ends at the shaped queue: a queued phase launches in its own session, with fresh eyes on the seed. Can't wait? Then it was never queue work — skip the queue and open its board directly. |
+| A pile of small fixes or tracker items | Sweep | side | "Sweep — P07 · P12 · §5." | A side-phase kind. Tracker-born: pull the items onto a light board and open directly — no queue row needed. A sweep can also be a verification pass over shipped work. |
+| Something to understand before anything gets decided | Research | side | "Research: explore §2 before we commit." | A side-phase kind. Lands a doc in `strategy/research/` and updates the tracker that asked — understanding is the deliverable, not code. |
+| Friction with the system itself — docs, rules, dashboard | System phase | system | "System phase: the close ritual keeps missing X — let's fix the rules." | A mode in itself, no kind. Name the friction and agree the scope before touching anything; system work is always done with the PO. |
+| An open board from an earlier chat | Continuation | the board's mode | "Continue the [phase name] board." | Not a new phase — a phase survives its chat. Commit anything stranded first (the session-end rule), then keep working the board. |
+| Questions, reading, thinking out loud | Not a phase yet | — | "How does the drift alarm work?" | No board needed — reading is never gated. The first edit is the line: at it, name the shape that fits and open its board (see the shared rules). |
+
+### The product phase — building the product
 
 **Purpose:** Chunked product work toward the app's goals, carrying a thesis (the structural change it delivers). Usually born from the queue; may open directly when something serious earns it. The product ships through this mode, so its rituals are the deepest.
 
@@ -63,7 +79,7 @@ Rules for humans and agents working in this repo. Read before building. This is 
 2. The **Closing Checklist** (§ Closing a Phase) — decisions propagated to home docs and the load-bearing ones lifted to `decisions.md`, feature docs updated, trackers pruned, ROADMAP re-oriented.
 3. **Distill + delete** — a compact record replaces the board and walkthrough.
 
-### Mode 2 · System — tending the system
+### The system phase — tending the system
 
 **Purpose:** Meta-work on the docs, workflow, and `/system` surface themselves — restructuring a tracker, rewriting these rules, reorganizing the doc tree, dashboard changes, a styleguide pass, **queue-shaping** (a system-phase kind, not a fourth mode — § Queue-shaping). Product-**agnostic** by definition, and the **inverse of a side phase**: the governance docs are its home ground. It must never settle product strategy in passing — if a strategic question surfaces mid-phase, it goes to Open Questions, not decided.
 
@@ -90,7 +106,7 @@ Rules for humans and agents working in this repo. Read before building. This is 
 5. Lands as its **own commit** (or PR), described as system work — mode-pure.
 6. **Board deleted** (git is the record; `decisions.md` carries the calls). A build-scale system phase that shipped something durable leaves a compact record in `archive/phases/`, like a product phase.
 
-### Mode 3 · Side — working the trackers
+### The side phase — working the trackers
 
 **Purpose:** Tracker-born work that runs alongside other phases — sweeping punch items, exploring an open question, **research** (a side-phase kind, not a fourth mode), or a verification pass. A side phase usually pulls **several** tracker items (a sweep), not one — single ≤30-min items wait in the punch list until a sweep collects them. Its board is light: the pulled items, checked off as they land.
 
@@ -115,29 +131,71 @@ Rules for humans and agents working in this repo. Read before building. This is 
 3. **Its tracker rows moved in the same PR** — punch rows removed, §N markers updated, FCs promoted/removed; research lands its doc in `strategy/research/` (frontmatter + `summary:`) and updates the spawning marker. Nothing ends without its trackers moving.
 4. One focused, mode-pure commit; **board deleted** (the moved rows + the commit are the record). **Spawned/worktree tasks additionally:** rebase onto current `main` before completing (conflicts are the side phase's problem, not the merger's — stale-vs-main work doesn't land), push a remote branch, open a PR as the merge surface.
 
+
+### The parts — the model is a kit
+
+This model is built from five parts, and every one of them is yours to reshape. That is the difference between adopting a method and owning a system: a part you can explain is a part you can change. Each part below says what it is and what defines it; what you can do with them — change them included — is § Adjustments, just below.
+
+#### Phase
+
+**Is:** The unit of work — any chunk of work run through the rituals, in exactly one mode. Opens as a board, closes by distill + delete.
+**Properties:** A mode (or a kind within one) · a goal or thesis · an orient set (what it reads at open) · touch bands · an opening and closing ritual · a board template.
+
+#### Mode
+
+**Is:** A phase's flavor — the setting that fixes every property at once. Three ship: the product phase (building the product), the system phase (tending the system), the side phase (working the trackers).
+**Properties:** Purpose · the touch bands · opening ritual · during-rules · closing ritual · a board template (`phases/_*-template.md`) · its kinds, if any — named shapes that reuse the mode's rituals whole (the sweep and research under side, queue-shaping under system; product has none — every product phase is the same shape, a thesis-carrying build).
+
+#### Ritual
+
+**Is:** A named set of steps bound to a trigger. No phase is ritual-free — and rituals are not phase-only: session start and session end run rituals too.
+**Properties:** A trigger · the steps · what it reads · what it leaves behind (a board, a commit, a handoff).
+
+#### Trigger
+
+**Is:** The moment a ritual fires. Six exist here: phase open · phase close · session start (reading `CLAUDE.md` — that *is* its ritual) · session end (commit the board — see the shared rules) · push (the publish — see the shared rules) · the run-once kickoff.
+**Properties:** The event · the ritual bound to it · who runs it — you, the agent, or the build.
+
+#### Band
+
+**Is:** The edit permission a phase carries for each doc family: home ground (edit freely) · careful (deliberate, never in passing) · gated (another mode's ground — suggest, don't edit). Bands gate pens, not eyes: reading is never gated.
+**Properties:** The three levels · each mode's mapping of docs to levels — the three band lines in its mode section.
+
+### Adjustments — allowed, never required
+
+None of these are things you should do. They're things the model won't break under, when you want them — each names the moment you'd want it. Make the change deliberately: edit the section that owns it, commit, and check that `/system/method` renders your version. The standing warning cuts both ways — a rule that no longer fits how you work is drift already; you're just the one obeying it.
+
+- **You keep opening the same shape of work and it has no name** → name it as a kind. The test is threefold: it recurs, it differs at open or close (its own opening line or its own deliverable), and it reuses the mode's rituals whole — the moment it needs its own rituals it's a mode argument, not a kind. Then it's a sentence in the host mode's Purpose and a row in § Session starters; queue-shaping is the worked example.
+- **You want something to happen at a moment nothing fires** → bind a ritual to a trigger: write the steps where the person acting on them will read them. The session-end rule entered the model exactly this way.
+- **A ritual step keeps getting skipped, or costs more than it catches** → edit or delete it in place; the numbered lists render as written. Chronic skipping is data: enforce the step or remove it deliberately, but don't keep obeying a rule you've already abandoned.
+- **A mode's ground doesn't match who actually edits what** → re-draw its band lines. The one rule worth keeping whatever you draw: reading is never gated.
+- **The boards don't record what you actually want to remember** → edit the molds (`phases/_*-template.md`); every new board inherits the change.
+- **You want a fourth mode** → the one change that costs code: a heading in the parsed shape, a board template, and a parser change (`getWorkModel` in `lib/system.ts`). Weigh a kind first; it's nearly always enough.
+- **A settled rule has stopped fitting** → reopen it deliberately: a structured challenge (§ Doc Tiers), logged win or lose. The model applies this to itself.
+
 ---
 
 ## Queue-shaping — a system-phase kind
 
-<!-- Prose only — NOT parsed by lib/system.ts. Named in Mode 2's Purpose, which IS parsed;
+<!-- Prose only — NOT parsed by lib/system.ts. Named in the system phase's Purpose, which IS parsed;
      this section is the how-to behind that clause. -->
 
-**You have an idea and nobody is doing it yet. That isn't a phase — it's a queue-shaping session.** It is to the system phase what research is to the side phase: a recognized *kind*, not a fourth mode. Mode 2's rituals exactly, no new template, no new badge, no new glossary. It is the routine way work enters the queue outside a phase's own close, and like all system work it is done with the PO.
+**You have an idea and nobody is doing it yet. That isn't a phase — it's a queue-shaping session.** It is to the system phase what research is to the side phase: a recognized *kind*, not a fourth mode. The system phase's rituals exactly, no new template, no new badge, no new glossary. It is the routine way work enters the queue outside a phase's own close, and like all system work it is done with the PO.
 
-**What it is for:** adding a row and writing its seed, splitting one row in two, reordering what comes next, dropping a row the project outgrew. **Not** for settling product strategy — a system phase never does that (§ Mode 2); a strategic question found while shaping goes to Open Questions. And if the idea turns out to be one you want built now, stop shaping and open its board — the queue is a staging area, never a gate.
+**What it is for:** adding a row and writing its seed, splitting one row in two, reordering what comes next, dropping a row the project outgrew. **Not** for settling product strategy — a system phase never does that (§ The system phase); a strategic question found while shaping goes to Open Questions. And if the idea turns out to be one you want built now, stop shaping and open its board — the queue is a staging area, never a gate. **Queue-shaping ends at the shaped queue:** a queued phase launches in its own session, so the seed is read by fresh eyes rather than graded by the context that wrote it. Wanting to launch immediately is the signal it was never queue work — take the direct-open path instead.
 
 **How to run it, start to finish:**
 
 1. **Open the chat with the friction, not the feature.** "The queue is wrong about what comes next." "I keep hitting this and there's no row for it." "These two rows are really one phase." Then agree the scope, as any system phase does.
-2. **Open a board** from `_system-template.md` — a few lines is the right size. Orient per Mode 2's step 3: the governance docs, then `decisions.md` for calls this reopens.
+2. **Open a board** from `_system-template.md` — a few lines is the right size. Orient per the system phase's step 3: the governance docs, then `decisions.md` for calls this reopens.
 3. **Shape.** Every row added gets its seed in `planning/queued/` in the same edit, and every row dropped takes its seed with it — the match between them is checked at build time, so a half-done edit shows up as a drift alarm.
-4. **Close** as Mode 2 closes: the verification handoff plus the canon diff. The ROADMAP is commitments-tier, so a shaped queue is nearly always a canon diff of one hunk. Log to `decisions.md` only when the *reasoning* would surprise someone in six months — the rows themselves speak.
+4. **Close** as the system phase closes: the verification handoff plus the canon diff. The ROADMAP is commitments-tier, so a shaped queue is nearly always a canon diff of one hunk. Log to `decisions.md` only when the *reasoning* would surprise someone in six months — the rows themselves speak.
 
 ---
 
 ## The Kickoff — the bootstrap before the loop
 
-<!-- Prose only — NOT parsed by lib/system.ts (deliberately not a fourth mode; getWorkModel still parses exactly the three '### Mode N' headings above). The kickoff is the one-time ignition, not part of the recurring cycle. -->
+<!-- Prose only — NOT parsed by lib/system.ts (deliberately not a fourth mode; getWorkModel still parses exactly the three phase headings above). The kickoff is the one-time ignition, not part of the recurring cycle. -->
 
 The three modes govern the **recurring** work cycle. The **kickoff is the ignition that runs once, before the cycle begins** — the bootstrap that turns an empty template into a project. It is deliberately *not* a fourth mode, because it breaks the two traits every mode shares:
 
@@ -164,25 +222,27 @@ The system's terms, defined once. Used consistently everywhere — docs, boards,
 - **PO** — the product owner: the human the work is done with and for. Every close ritual hands off to the PO; walkthroughs are driven by the PO. In a solo project, that's you wearing the reviewer hat.
 - **Phase** — the work unit: any chunk of work run through the rituals, in exactly one mode. Opens as a board, closes by distill + delete.
 - **Session** — one chat. One phase per session is the strong default, not a law: a phase survives a force-ended chat, and a fresh session picking its board back up is continuation, not error-recovery. Named at board open — `Project · mode · Phase name` — with the title recorded on the board.
-- **Mode** — a phase's flavor: Product (building the product), System (tending the system itself), or Side (working the trackers). The mode sets the ritual's weight and focus, the board's template, the orient set, and the touch bands.
+- **Mode** — a phase's flavor: the product phase (building the product), the system phase (tending the system itself), or the side phase (working the trackers). The mode sets the ritual's weight and focus, the board's template, the orient set, and the touch bands.
+- **Kind** — a named shape of work inside an existing mode, reusing its rituals whole: the sweep and research (side), queue-shaping (system); product has none. Earned by recurrence, never declared for symmetry — the test lives in § Adjustments, each kind's opening line in § Session starters.
 - **Kickoff** — the one-time bootstrap that runs before the three-mode loop: it writes the strategy shelf (rather than orienting against it) and opens all ground because it's creating everything. Not a fourth mode — the ignition. See "The Kickoff" above.
 - **Board** — a phase's worklist and running record while open, in `phases/`, created from its mode's template. Scale varies by mode: product boards are heavy (workstreams + a walkthrough sibling); side boards are light (the tracker items pulled in); system boards fit the friction. Always `tier: working` while open; distilled and deleted at close — product phases leave a compact record.
 - **Seed** — a queued phase's accumulation space, one file in `planning/queued/` for any mode: a pitch, dated notes, candidate scope, refs — never tasks. Folds into the board at phase open and is deleted.
 - **Queue** — the ROADMAP's What's Next: upcoming planned work of any mode, one mode-tagged list, every row carrying a seed. A staging area, never a gate — urgent work opens a board directly. Each phase maintains its own row: removed at open, written at close.
-- **Queue-shaping** — a system-phase kind, not a fourth mode: the session that adds, splits, reorders or drops queue rows when no phase's own open or close is doing it. Mode 2's rituals unchanged. See § Queue-shaping.
-- **Ritual** — a mode's defined opening steps (orient + touch-check included), during-rules, and closing steps. No phase is ritual-free.
+- **Queue-shaping** — a system-phase kind, not a fourth mode: the session that adds, splits, reorders or drops queue rows when no phase's own open or close is doing it. The system phase's rituals unchanged. See § Queue-shaping.
+- **Ritual** — a named set of steps bound to a trigger: a mode's opening steps (orient + touch-check included), during-rules, and closing steps — and not phase-only: session start, session end, and push run rituals too (§ The parts). No phase is ritual-free.
+- **Trigger** — the moment a ritual fires: phase open, phase close, session start, session end, push, or the run-once kickoff. Bind a ritual to a trigger by writing its steps where the person acting on it will read them (§ The parts).
 - **Touch bands** — a mode's three editing tiers: **home ground** (edit freely, per the board), **careful** (update deliberately when the work bears on it, never in passing), **gated** (another mode's ground — suggest, don't edit). Bands gate pens, not eyes: reading is never gated.
 - **Walkthrough** — a product phase's collaborative review doc: "Open for your call" + "Worth verifying" points, passed one by one with the PO before the phase can close.
-- **Canon diff** — the ratification gate at every close: before its board is deleted, a phase walks the PO through every change it made to bedrock- and commitments-tier docs (CLAUDE.md included). Runs inside Mode 2/3's verification handoff and as its own step before Mode 1's distill-and-delete.
+- **Canon diff** — the ratification gate at every close: before its board is deleted, a phase walks the PO through every change it made to bedrock- and commitments-tier docs (CLAUDE.md included). Runs inside the system and side phases' verification handoff and as its own step before the product phase's distill-and-delete.
 - **Tracker** — one of the three standing lists holding *candidates* — quick, lean task notes waiting between phases: the punch list (P##), the Open Questions log (§N), and Future Considerations (FC##). Phases pull items at open (a side phase usually pulls several — a sweep) and move the rows at close.
 - **Tier** — a doc's review cadence: bedrock · commitments · working · surface. Docs sink toward bedrock by surviving; reopening a settled one takes a structured challenge.
 - **The law** — "derived, never authored": every `/system` page renders from the docs at build time. To change a page, change its source doc; if they disagree, the docs win.
 
 ---
 
-## Product Lifecycle (Mode 1's rituals, in full)
+## Product Lifecycle (the product phase's rituals, in full)
 
-The detailed rituals behind Mode 1 above. Every product phase follows this lifecycle. **Do not skip steps.**
+The detailed rituals behind the product phase above. Every product phase follows this lifecycle. **Do not skip steps.**
 
 **Template:** New product phases start from `phases/_product-template.md`, which includes embedded opening and closing checklists. The checklists are part of the board — they get marked done alongside the tasks.
 

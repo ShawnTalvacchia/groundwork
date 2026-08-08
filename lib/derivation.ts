@@ -86,6 +86,31 @@ export function getDriftAlarms(): DriftAlarm[] {
   if (!wm.lede || wm.sharedRules.length < 3) {
     alarm("getWorkModel", "CONTRIBUTING.md § The Work Model", "lede or shared rules parsed empty");
   }
+  // § The parts — the concept layer ships with the template (five parts:
+  // Phase, Mode, Ritual, Trigger, Band), so a fresh project boots clean and
+  // a missing or malformed block is real drift.
+  if (wm.parts.length !== 5) {
+    alarm("getWorkModel", "CONTRIBUTING.md § The Work Model", `parsed ${wm.parts.length} parts, expected 5`);
+  }
+  for (const p of wm.parts) {
+    const missing = [!p.is && "Is", !p.properties && "Properties"].filter(Boolean);
+    if (missing.length) {
+      alarm("getWorkModel", "CONTRIBUTING.md § The Work Model", `part "${p.name}" missing: ${missing.join(", ")}`);
+    }
+  }
+  // § Session starters + § Adjustments ship with the template too — the front
+  // door and the reshaping map. Floors, not exact counts: adopters add rows.
+  if (wm.starters.length < 5) {
+    alarm("getWorkModel", "CONTRIBUTING.md § The Work Model", `parsed ${wm.starters.length} session starters, expected 5+`);
+  }
+  for (const st of wm.starters) {
+    if (!st.arriving || !st.shape || !st.mode || !st.prompt || !st.openBy) {
+      alarm("getWorkModel", "CONTRIBUTING.md § The Work Model", `starter row "${st.arriving || "?"}" has an empty cell`);
+    }
+  }
+  if (wm.adjustments.length < 3) {
+    alarm("getWorkModel", "CONTRIBUTING.md § The Work Model", `parsed ${wm.adjustments.length} adjustments, expected 3+`);
+  }
 
   const tm = getTrackerModel();
   if (tm.trackers.length < 2 || tm.flow.length < 2 || !tm.sharedRule) {

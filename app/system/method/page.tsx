@@ -9,10 +9,10 @@ import { MdInline, SourceNote } from "../ui";
 // away. The ritual is reference you consult when opening a phase; the top
 // half is what you read to tell the modes apart.
 
-const MODE_ACCENT: Record<number, string> = {
-  1: "sys-mode--product",
-  2: "sys-mode--system",
-  3: "sys-mode--side",
+const MODE_ACCENT: Record<string, string> = {
+  product: "sys-mode--product",
+  system: "sys-mode--system",
+  side: "sys-mode--side",
 };
 
 // The three touch bands — they gate pens, not eyes (reading is never gated).
@@ -57,7 +57,8 @@ function Steps({ label, steps }: { label: string; steps: string[] }) {
 }
 
 export default function MethodPage() {
-  const { lede, sharedRules, modes } = getWorkModel();
+  const { lede, sharedRules, modes, startersLede, starters, partsLede, parts, adjustmentsLede, adjustments } =
+    getWorkModel();
 
   return (
     <>
@@ -82,14 +83,98 @@ export default function MethodPage() {
         ))}
       </section>
 
+      {/* Session starters — the front door: what you're arriving with, the
+          shape that fits, and literally what to say. First because it is the
+          first question a new session actually has. */}
+      {starters.length > 0 && (
+        <section className="flex flex-col gap-md">
+          <h2 className="text-lg font-semibold text-fg-primary">Session starters</h2>
+          <p className="text-sm text-fg-secondary max-w-[64ch]">
+            <MdInline text={startersLede} />
+          </p>
+          <div className="flex flex-col gap-sm">
+            {starters.map((s) => (
+              <div key={s.arriving} className="sys-part grid gap-sm md:grid-cols-[1.1fr_auto_1.6fr] md:items-baseline">
+                <span className="text-sm font-semibold text-fg-primary leading-snug">
+                  <MdInline text={s.arriving} />
+                </span>
+                <span className="flex items-baseline gap-sm md:justify-self-start">
+                  <span className="sys-pill">{s.shape}</span>
+                  <span className="text-2xs uppercase tracking-wide text-fg-tertiary">
+                    <MdInline text={s.mode} />
+                  </span>
+                </span>
+                <span className="flex flex-col gap-xs">
+                  <span className="text-xs italic text-fg-primary leading-snug">
+                    <MdInline text={s.prompt} />
+                  </span>
+                  <span className="text-xs text-fg-secondary leading-snug">
+                    <MdInline text={s.openBy} />
+                  </span>
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* The parts — the concept layer: the model presented as a kit the
+          adopter can reshape, rendered where a stranger reads the method. */}
+      {parts.length > 0 && (
+        <section className="flex flex-col gap-md">
+          <h2 className="text-lg font-semibold text-fg-primary">The parts</h2>
+          <p className="text-sm text-fg-secondary max-w-[64ch]">
+            <MdInline text={partsLede} />
+          </p>
+          <div className="grid gap-md md:grid-cols-2">
+            {parts.map((p) => (
+              <article key={p.name} className="sys-part">
+                <h3 className="text-base font-semibold text-fg-primary">{p.name}</h3>
+                <p className="text-sm text-fg-secondary leading-snug">
+                  <MdInline text={p.is} />
+                </p>
+                <div className="sys-scope">
+                  <span className="sys-scope-head">Properties</span>
+                  <span className="text-xs text-fg-secondary leading-snug">
+                    <MdInline text={p.properties} />
+                  </span>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Adjustments — allowed, never required: one consolidated map instead
+          of per-part "change it" blocks, which read as prescription. */}
+      {adjustments.length > 0 && (
+        <section className="flex flex-col gap-md">
+          <h2 className="text-lg font-semibold text-fg-primary">Adjustments</h2>
+          <p className="text-sm text-fg-secondary max-w-[64ch]">
+            <MdInline text={adjustmentsLede} />
+          </p>
+          <ul className="flex flex-col gap-sm">
+            {adjustments.map((a) => (
+              <li key={a.when} className="sys-scope">
+                <span className="text-sm font-semibold text-fg-primary leading-snug">
+                  <MdInline text={a.when} />
+                </span>
+                <span className="text-xs text-fg-secondary leading-snug">
+                  <MdInline text={a.what} />
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       {/* The three modes */}
       <section className="flex flex-col gap-md">
         <h2 className="text-lg font-semibold text-fg-primary">The three modes</h2>
         <div className="flex flex-col gap-lg">
           {modes.map((m) => (
-            <article key={m.num} className={`sys-mode ${MODE_ACCENT[m.num] ?? ""}`}>
+            <article key={m.key} className={`sys-mode ${MODE_ACCENT[m.key] ?? ""}`}>
               <div className="flex items-baseline gap-sm flex-wrap">
-                <span className="sys-mode-num">{m.num}</span>
                 <h3 className="text-lg font-semibold text-fg-primary">{m.label}</h3>
                 <span className="text-sm text-fg-tertiary">{m.tagline}</span>
               </div>

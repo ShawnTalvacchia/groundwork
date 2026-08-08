@@ -68,7 +68,7 @@ A fixed header carries the main tabs — **System** + three groups (Work · Stru
 
 | Page | Renders from |
 |------|--------------|
-| Overview | counts from every list + the Glossary + `ROADMAP.md` Where We Are + doc freshness + the **queue shelf**: the next 4 queued rows joined to their seeds, mode-badged, each linking to its seed, under the full queue count (`QueueShelf`, shared with Work → Overview) |
+| Overview | counts from every list + the Glossary + `ROADMAP.md` Where We Are + doc freshness + the **session-starters strip** (`StartersStrip`, inside Work above the active board: a shelf collapsed by default, each row a collapsed card expanding in place to its example prompt and what-happens text; the header's "How we work →" is the only link out) + the **queue shelf**: the next 4 queued rows joined to their seeds, mode-badged, each linking to its seed, under the full queue count (`QueueShelf`, shared with Work → Overview) |
 | Active board(s) | `docs/phases/*.md` (templates excluded) — the board in full under a mode badge + progress. Heavy boards derive it from each `## Workstream` section's Status-cell task rows + legacy checkboxes; light boards (no workstreams) count their `## Items` checkboxes directly, excluding the closing checklist |
 | Roadmap | `ROADMAP.md` (Where We Are, the queue table — any mode, horizon) + `planning/queued/*.md` seeds (`getQueuedSeeds` — frontmatter + lede feed the cards, `mode:` badges each; the whole card links to its seed; the invariant is bidirectional and mode-agnostic — an orphaned seed or a seedless row trips the drift banner) |
 | Questions | `planning/Open Questions & Assumptions Log.md` (`## N. Topic` → `### Question?` with Area/Opened/Priority/Thinking/Resolves-when; everything in the file is open — resolved is deleted) |
@@ -79,7 +79,7 @@ A fixed header carries the main tabs — **System** + three groups (Work · Stru
 | Strategy | `docs/strategy/**` frontmatter (`summary` one-liners; grouped by tier + subfolder) |
 | Timeline | `docs/archive/phases/*.md` (walkthroughs skipped) — month-grouped, newest first |
 | Decisions | `docs/decisions.md` (`## date · title` entries, What/Why/Where) |
-| Method → How we work | `CONTRIBUTING.md § The Work Model` — parsed: lede, shared rules, per-mode purpose / touch bands / numbered rituals |
+| Method → How we work | `CONTRIBUTING.md § The Work Model` — parsed: lede, shared rules, per-mode purpose / touch bands / numbered rituals (the three `### The <product|system|side> phase — tagline` headings), § Session starters (the front-door table: arriving → shape → mode → example prompt → what happens), § The parts (`#### <Part>` blocks with Is / Properties — the concept layer), and § Adjustments (`- **when** → what` bullets). The page renders starters → parts → adjustments → modes → shared rules, regardless of doc order |
 | Method → Trackers | `CONTRIBUTING.md § The Planning Trackers` |
 | Method → Tiers | `CONTRIBUTING.md § Doc Tiers & Review Physics` |
 | Method → Glossary | `CONTRIBUTING.md § Glossary` |
@@ -90,7 +90,7 @@ A fixed header carries the main tabs — **System** + three groups (Work · Stru
 
 **The doc formats are parser API, and format drift fails silently** — a parser handed an unexpected shape returns empty or partial, and the page renders hollow with no signal. Three defenses:
 
-- **Invariants, not zero-checks** — `lib/derivation.ts` asserts each parser's promised shape (3 modes with all fields, 4 known tiers with live thresholds, every question carrying area + resolves-when, frontmatter coverage …). Non-zero-but-wrong parses are the worst class; zero-checks alone miss them.
+- **Invariants, not zero-checks** — `lib/derivation.ts` asserts each parser's promised shape (3 modes with all fields, 5 parts with Is/Properties, 5+ session-starter rows with no empty cell, 3+ adjustments, 4 known tiers with live thresholds, every question carrying area + resolves-when, frontmatter coverage …). Non-zero-but-wrong parses are the worst class; zero-checks alone miss them.
 - **Unrendered features** — every product feature doc must land in a bucket the Features page renders. `getFeatureAreas` derives the area set, so total coverage holds by construction; the alarm fires if a fixed vocabulary is reintroduced, because a fixed set drops the docs that fall outside it. Its limit is stated in the code — it proves no doc was dropped, not that the labels came from the docs; nothing in `lib/` can see a literal authored into a page under `app/`.
 - **Dangling references** — every tracker ID named in the two state docs (`ROADMAP.md` and the project root's `CLAUDE.md`) must still exist in its tracker: `P##` in the punch list, `FC##` in Future Considerations, `§N` in the Open Questions log. Parsed by `getStateReferences`; prose only, one alarm per dangling ID per doc. This is the one invariant that guards *content* rather than format, and it earns the exception by catching the failure format checks cannot see: a doc still describing an item as pending after the item shipped and left its tracker. `§ N` with a space is a section pointer, not an ID, and is not scanned.
 - **The surface self-reports** — any failing invariant renders an amber band on every `/system` page, naming the parser, the source doc, and the problem. **Warn, never fail:** a drifted doc format must not block a deploy.

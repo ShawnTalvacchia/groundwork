@@ -203,6 +203,54 @@
 /* A sunken shelf holding a set of cards under a flat label — used for the
    queue on the hubs, where the group is a unit rather than free-standing
    peers. The label sits on the shelf, not in a card of its own. */
+/* Session starters — a light card folded shut by default. Only the header
+   band carries the inset fill (its own 16px padding); the rows bleed to the
+   card's edges with full-width dividers, and the last row closes the card
+   without a stray rule. */
+.sys-starters {
+  background: var(--surface-top);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-panel);
+}
+
+.sys-starters > summary {
+  cursor: pointer;
+  list-style: none;
+  padding: var(--space-4);
+  background: var(--surface-inset);
+  border-radius: calc(var(--radius-panel) - 1px);
+}
+
+.sys-starters[open] > summary {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.sys-starters > summary::-webkit-details-marker {
+  display: none;
+}
+
+.sys-starters > summary .sys-caret {
+  transition: transform 120ms ease;
+  color: var(--text-light);
+}
+
+.sys-starters[open] > summary .sys-caret {
+  transform: rotate(90deg);
+}
+
+/* Rows: the divider runs edge to edge (border on the full-width element);
+   the content insets to match the header's padding. */
+.sys-starters-body > .sys-details {
+  padding: 0 var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.sys-starters-body > .sys-details:last-child {
+  border-bottom: 0;
+}
+
 .sys-shelf {
   display: flex;
   flex-direction: column;
@@ -551,17 +599,16 @@
   border-left-style: dashed;
 }
 
-.sys-mode-num {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  border-radius: var(--radius-circle);
-  background: var(--surface-inset);
-  font-size: var(--text-2xs);
-  font-weight: var(--weight-semibold);
-  color: var(--text-secondary);
+/* Part card — § The parts, the model presented as a kit. Same family as the
+   mode card, no accent rail: parts are vocabulary, not lanes to tell apart. */
+.sys-part {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--surface-top);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-panel);
 }
 
 /* Scope cards — the mode's three touch bands (home ground / careful / gated).

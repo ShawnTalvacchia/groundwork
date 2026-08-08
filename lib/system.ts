@@ -250,9 +250,8 @@ export function getGlossary(): GlossaryTerm[] {
 }
 
 export interface WorkMode {
-  num: number;
   key: BoardMode;
-  label: string; // "Product"
+  label: string; // "The product phase"
   tagline: string; // "building the product"
   purpose: string; // markdown kept — render with MdInline
   /** The three touch bands — they gate pens, not eyes (reading is never gated). */
@@ -264,10 +263,45 @@ export interface WorkMode {
   close: string[];
 }
 
+/** One `#### <Part>` block under `### The parts` — the concept layer that
+ *  presents the model as adjustable: what a part is and what defines it.
+ *  How to change things lives in `### Adjustments`, deliberately apart —
+ *  per-part "change it" blocks read as prescription. */
+export interface WorkPart {
+  name: string; // "Trigger"
+  is: string;
+  properties: string;
+}
+
+/** One row of the `### Session starters` table — the model's front door:
+ *  what you're arriving with → the shape that fits → what to say. */
+export interface SessionStarter {
+  arriving: string;
+  shape: string; // a mode, a kind within one, or "Not a phase yet"
+  mode: string;
+  prompt: string; // literally how you'd open the chat
+  openBy: string; // classification + what happens
+}
+
+/** One `### Adjustments` bullet: the moment you'd want a change → what to do. */
+export interface Adjustment {
+  when: string;
+  what: string;
+}
+
 export interface WorkModel {
   lede: string;
   sharedRules: string[];
   modes: WorkMode[];
+  /** Lede paragraph of `### Session starters`. */
+  startersLede: string;
+  starters: SessionStarter[];
+  /** Lede paragraph of `### The parts`. */
+  partsLede: string;
+  parts: WorkPart[];
+  /** Lede paragraph of `### Adjustments`. */
+  adjustmentsLede: string;
+  adjustments: Adjustment[];
 }
 
 /** Numbered list items directly under a `**Label:**` heading line. */
@@ -279,38 +313,86 @@ function numberedUnder(body: string, label: string): string[] {
   return (block.match(/^\d+\.\s+.*$/gm) ?? []).map((l) => l.replace(/^\d+\.\s+/, "").trim());
 }
 
-const MODE_KEYS: Record<number, BoardMode> = { 1: "product", 2: "system", 3: "side" };
-
 export function getWorkModel(): WorkModel {
   const parsed = readDoc("CONTRIBUTING.md");
-  if (!parsed) return { lede: "", sharedRules: [], modes: [] };
+  const empty: WorkModel = {
+    lede: "", sharedRules: [], modes: [],
+    startersLede: "", starters: [], partsLede: "", parts: [],
+    adjustmentsLede: "", adjustments: [],
+  };
+  if (!parsed) return empty;
   const section = sectionOf(parsed.body, "The Work Model — every phase runs in one of three modes");
   const lede = section.trim().split("\n\n")[0] ?? "";
   const sharedBlock = section.split(/\*\*Rules shared by all modes:\*\*/)[1]?.split(/^### /m)[0] ?? "";
   const sharedRules = (sharedBlock.match(/^- .*$/gm) ?? []).map((b) => b.slice(2).trim());
 
   const modes: WorkMode[] = [];
+  let startersLede = "";
+  const starters: SessionStarter[] = [];
+  let partsLede = "";
+  const parts: WorkPart[] = [];
+  let adjustmentsLede = "";
+  const adjustments: Adjustment[] = [];
   for (const block of section.split(/^### /m).slice(1)) {
     const header = block.slice(0, block.indexOf("\n"));
-    const hm = header.match(/^Mode (\d+) · (.+?) — (.+)$/);
-    if (!hm) continue;
     const body = block.slice(block.indexOf("\n") + 1);
-    const num = Number(hm[1]);
-    modes.push({
-      num,
-      key: MODE_KEYS[num] ?? "product",
-      label: hm[2].trim(),
-      tagline: hm[3].trim(),
-      purpose: boldField(body, "Purpose"),
-      homeGround: boldField(body, "Home ground"),
-      careful: boldField(body, "Careful"),
-      gated: boldField(body, "Gated"),
-      open: numberedUnder(body, "Opening ritual"),
-      during: boldField(body, "During"),
-      close: numberedUnder(body, "Closing ritual"),
-    });
+
+    // The modes are named, not numbered: exactly these three headings.
+    // Adding a mode means widening this match — a cost § Adjustments
+    // states to adopters outright.
+    const hm = header.match(/^The (product|system|side) phase — (.+)$/);
+    if (hm) {
+      modes.push({
+        key: hm[1] as BoardMode,
+        label: `The ${hm[1]} phase`,
+        tagline: hm[2].trim(),
+        purpose: boldField(body, "Purpose"),
+        homeGround: boldField(body, "Home ground"),
+        careful: boldField(body, "Careful"),
+        gated: boldField(body, "Gated"),
+        open: numberedUnder(body, "Opening ritual"),
+        during: boldField(body, "During"),
+        close: numberedUnder(body, "Closing ritual"),
+      });
+      continue;
+    }
+
+    // `### Session starters` — the front door: arrival → shape → what to say.
+    if (header.startsWith("Session starters")) {
+      startersLede = body.trim().split("\n\n")[0] ?? "";
+      for (const row of body.match(/^\|.*\|$/gm) ?? []) {
+        const cells = row.split("|").slice(1, -1).map((c) => c.trim());
+        if (cells.length < 5 || /^-+$/.test(cells[0]) || cells[0] === "You're arriving with") continue;
+        starters.push({ arriving: cells[0], shape: cells[1], mode: cells[2], prompt: cells[3], openBy: cells[4] });
+      }
+      continue;
+    }
+
+    // `### The parts` — the concept layer: `#### <Part>` blocks with
+    // Is / Properties fields.
+    if (header.startsWith("The parts")) {
+      partsLede = body.trim().split("\n\n")[0] ?? "";
+      for (const pb of body.split(/^#### /m).slice(1)) {
+        const name = pb.slice(0, pb.indexOf("\n")).trim();
+        const pbody = pb.slice(pb.indexOf("\n") + 1);
+        parts.push({
+          name,
+          is: boldField(pbody, "Is"),
+          properties: boldField(pbody, "Properties"),
+        });
+      }
+      continue;
+    }
+
+    // `### Adjustments` — `- **the moment you'd want it** → what to do`.
+    if (header.startsWith("Adjustments")) {
+      adjustmentsLede = body.trim().split("\n\n")[0] ?? "";
+      const re = /^- \*\*(.+?)\*\* → (.+)$/gm;
+      let m;
+      while ((m = re.exec(body))) adjustments.push({ when: m[1].trim(), what: m[2].trim() });
+    }
   }
-  return { lede, sharedRules, modes };
+  return { lede, sharedRules, modes, startersLede, starters, partsLede, parts, adjustmentsLede, adjustments };
 }
 
 export interface TrackerRow {

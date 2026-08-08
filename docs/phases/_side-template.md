@@ -9,7 +9,7 @@ read-when: "board close (deleted at close — the moved tracker rows + the commi
 
 # [Sweep — P## · P## · P## | Explore §N | Research: topic] — opened YYYY-MM-DD
 
-**Mode: side.** Light board: the tracker items this session pulled. Opening/closing ritual in `CONTRIBUTING.md` → Mode 3. Deleted at close.
+**Mode: side.** Light board: the tracker items this session pulled. Opening/closing ritual in `CONTRIBUTING.md` → The side phase. Deleted at close.
 
 **Project:** [the repo this board lives in — work outside it gets handed over, not done]
 
@@ -26,4 +26,4 @@ read-when: "board close (deleted at close — the moved tracker rows + the commi
 
 ## Verify at close
 
-[The in-chat handoff (CONTRIBUTING → Mode 3 close, step 1): what the PO checks before the board is deleted. Code/UI → `who's looking → /url → what to expect` per changed surface; research → the doc summary + load-bearing findings. Delete this section's prompt text as you fill it.]
+[The in-chat handoff (CONTRIBUTING → the side phase's close, step 1): what the PO checks before the board is deleted. Code/UI → `who's looking → /url → what to expect` per changed surface; research → the doc summary + load-bearing findings. Delete this section's prompt text as you fill it.]

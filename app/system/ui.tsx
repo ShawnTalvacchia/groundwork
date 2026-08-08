@@ -84,6 +84,62 @@ export function Tile({
  *
  *  Presence-not-count, like the invariants: a fresh project has queued nothing,
  *  and the shelf still renders so the roadmap stays one click away on day one. */
+/** The hub's front door, folded away: a collapsed shelf naming the session
+ *  starters, each row a collapsed card that expands to what you'd actually
+ *  say or do. The method page holds the full table; the header link is the
+ *  only route there — rows expand in place rather than navigate. */
+export function StartersStrip({
+  starters,
+}: {
+  starters: { arriving: string; shape: string; prompt: string; openBy: string }[];
+}) {
+  if (starters.length === 0) return null;
+  return (
+    <details className="sys-starters">
+      <summary className="flex items-baseline justify-between gap-md">
+        <span className="flex items-baseline gap-sm text-2xs font-semibold uppercase tracking-wide text-fg-tertiary">
+          <span className="sys-caret" aria-hidden>
+            ›
+          </span>
+          Starting a session
+          <span className="font-normal normal-case tracking-normal">match what you&apos;re holding to a shape</span>
+        </span>
+        <Link href="/system/method" className="text-xs text-fg-secondary underline underline-offset-2">
+          How we work →
+        </Link>
+      </summary>
+      <div className="sys-starters-body flex flex-col">
+        {starters.map((s) => (
+          <details key={s.arriving} className="sys-details">
+            {/* md: a fixed arrival column so every arrow sits on the same
+                line; small screens fall back to wrapping flex. */}
+            <summary className="flex flex-wrap items-baseline gap-sm md:grid md:grid-cols-[minmax(0,22rem)_auto_1fr]">
+              <span className="flex items-baseline gap-sm text-xs text-fg-secondary leading-snug">
+                <span className="sys-caret" aria-hidden>
+                  ›
+                </span>
+                {s.arriving}
+              </span>
+              <span aria-hidden className="text-fg-light">
+                →
+              </span>
+              <span className="text-xs font-semibold text-fg-primary md:whitespace-nowrap">{s.shape}</span>
+            </summary>
+            <div className="flex flex-col gap-xs pb-md pl-lg max-w-[72ch]">
+              <p className="text-xs italic text-fg-primary leading-snug">
+                <MdInline text={s.prompt} />
+              </p>
+              <p className="text-xs text-fg-secondary leading-snug">
+                <MdInline text={s.openBy} />
+              </p>
+            </div>
+          </details>
+        ))}
+      </div>
+    </details>
+  );
+}
+
 export function QueueShelf({
   items,
   limit = 4,
